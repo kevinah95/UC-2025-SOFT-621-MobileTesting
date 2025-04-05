@@ -1,0 +1,8 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  l01:
+    cmds:
+      - quarto preview lessons/L01/L01.qmd --output-dir output
