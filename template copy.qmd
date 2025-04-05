@@ -1,0 +1,165 @@
+---
+title: "Introducción a Mobile Testing"
+format:
+  quarto-kotlin-theme-revealjs: default
+---
+
+## Lección 01: Introducción a Mobile Testing
+
+### Agenda
+
+*   Introducción a Mobile Testing
+*   Metodología TDD (Desarrollo Dirigido por Pruebas)
+*   AAA (Arrange, Act, Assert)
+*   Importancia de las pruebas en dispositivos móviles
+*   Tipos de pruebas móviles
+*   Entorno de pruebas móviles
+*   Metodología Tradicional
+*   Metodología Ágil
+*   Pruebas Unitarias
+*   Pruebas de Regresión
+*   Pruebas de Integración
+*   Pruebas Funcionales
+*   Pruebas de Seguridad
+*   Pruebas de Carga
+*   Pruebas de Aceptación del Usuario
+*   Pros y Contras del Desarrollo Tradicional
+*   Pros y Contras del Desarrollo TDD
+
+## Introducción a Mobile Testing
+
+*   ¿Qué es Mobile Testing?
+    *   Proceso de prueba de aplicaciones móviles para garantizar su calidad, funcionalidad y usabilidad en diversos dispositivos y entornos.
+*   Importancia
+    *   Asegurar la calidad en un mercado diverso de dispositivos.
+    *   Mejorar la experiencia del usuario.
+    *   Reducir costos de mantenimiento y errores post-lanzamiento.
+
+## Metodología TDD (Desarrollo Dirigido por Pruebas)
+
+*   ¿Qué es TDD?
+    *   Ciclo de desarrollo donde primero se escriben las pruebas, luego el código para pasar esas pruebas y finalmente se refactoriza el código.
+*   Beneficios
+    *   Código más limpio y mantenible.
+    *   Detección temprana de errores.
+    *   Mayor confianza en el código.
+
+## AAA (Arrange, Act, Assert)
+
+*   ¿Qué es AAA?
+    *   Patrón para escribir pruebas unitarias claras y concisas.
+*   Componentes
+    *   **Arrange:** Preparar el entorno de prueba.
+    *   **Act:** Ejecutar la acción a probar.
+    *   **Assert:** Verificar el resultado esperado.
+
+## Importancia de las pruebas en dispositivos móviles
+
+*   Diversidad de dispositivos y sistemas operativos.
+    *   Necesidad de pruebas exhaustivas en diferentes configuraciones.
+*   Condiciones de red variables.
+    *   Pruebas de rendimiento en diferentes tipos de conexión.
+*   Interacción del usuario.
+    *   Pruebas de usabilidad y accesibilidad.
+
+## Tipos de pruebas móviles
+
+*   Pruebas funcionales.
+    *   Verificar que la aplicación cumpla con los requisitos funcionales.
+*   Pruebas de rendimiento.
+    *   Evaluar la velocidad, estabilidad y consumo de recursos de la aplicación.
+*   Pruebas de usabilidad.
+    *   Evaluar la facilidad de uso y la experiencia del usuario.
+*   Pruebas de seguridad.
+    *   Evaluar la vulnerabilidad de la applicación a ataques externos.
+
+## Tipos de pruebas móviles
+
+*   Pruebas de compatibilidad.
+    *   Evaluar que la aplicación sea compatible con los diferentes dispositivos y sistemas operativos.
+
+## Entorno de pruebas móviles
+
+*   Dispositivos reales vs. emuladores/simuladores.
+    *   Ventajas y desventajas de cada opción.
+*   Herramientas de prueba.
+    *   Espresso, XCTest, etc.
+*   Laboratorios de dispositivos en la nube.
+    *   Soluciones para probar en una amplia gama de dispositivos.
+
+
+## Pruebas Unitarias
+
+*   Pruebas de componentes individuales del software.
+*   Aislan partes del código para verificar su correcto funcionamiento.
+*   Fundamentales en TDD.
+
+## Pruebas de Regresión
+
+*   Verifican que los cambios recientes no hayan afectado negativamente la funcionalidad existente.
+*   Aseguran la estabilidad del software a lo largo del tiempo.
+
+## Pruebas de Integración
+
+*   Prueban la interacción entre diferentes módulos o componentes del software.
+*   Verifican que las partes del sistema funcionen juntas correctamente.
+
+## Pruebas Funcionales
+
+*   Verifican que el software cumpla con los requisitos funcionales especificados.
+*   Prueban las funciones y características del sistema.
+
+## Pruebas de Seguridad
+
+*   Evalúan la vulnerabilidad del software a amenazas y ataques.
+*   Aseguran la confidencialidad, integridad y disponibilidad de los datos.
+
+## Pruebas de Carga
+
+*   Evalúan el rendimiento del software bajo condiciones de carga elevada.
+*   Verifican la estabilidad y capacidad de respuesta del sistema.
+
+## Pruebas de Aceptación del Usuario
+
+*   Pruebas realizadas por los usuarios finales para validar que el software cumple con sus necesidades y expectativas.
+*   Determinan si el sistema está listo para ser lanzado.
+
+## Pros y Contras del Desarrollo Tradicional
+
+*   **Pros:**
+    *   Plan y visión claros.
+    *   Lanzamiento rápido del software.
+    *   Estimación precisa de tiempos y presupuestos.
+    *   Menor impacto del cambio de personal.
+*   **Contras:**
+    *   Falta de flexibilidad para cambios.
+    *   Las pruebas se pueden omitir por retrasos.
+    *   Requiere conocer todos los requisitos iniciales.
+    *   Posible código innecesario o repetido.
+
+## Pros y Contras del Desarrollo TDD
+
+*   **Pros:**
+    *   Código mejor organizado, adaptable y fácil de expandir.
+    *   Reducción de defectos en el código.
+    *   Detección temprana de errores.
+    *   Las pruebas son un componente fundamental.
+*   **Contras:**
+    *   Requiere escribir muchas pruebas al inicio.
+    *   Posibles puntos ciegos si se malinterpretan los requisitos.
+    *   Falsa sensación de seguridad por muchas pruebas pasando.
+    *   Pruebas mal escritas pueden generar sobrecarga de mantenimiento.
+
+## Rutina de pensamiento: "Veo, pienso, me pregunto"
+
+*   **Veo**: ¿Qué observan en las diapositivas sobre Mobile Testing y los diferentes enfoques de desarrollo y pruebas?
+*   **Pienso**: ¿Qué ideas o conceptos les resultan más interesantes o desafiantes? ¿Cómo se relacionan las metodologías de desarrollo con los tipos de pruebas?
+*   **Me pregunto**: ¿Qué preguntas tienen sobre cómo implementar estas metodologías y pruebas en proyectos reales de Mobile Testing? ¿Cómo elegir la mejor metodología para un proyecto específico?
+
+## Actividad extra clase
+
+Password:
+
+- Longitud 8 hasta 16 caracteres
+- Sin vocales
+- Con al menos un caracter especial (*, ., |)

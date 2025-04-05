@@ -1,0 +1,68 @@
+/*-- scss:defaults --*/
+
+/* TODO: Customize presentation appearance by setting SCSS variables */
+/* See https://quarto.org/docs/presentations/revealjs/themes.html#customizing-themes */
+
+/* Font settings */
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Open+Sans&family=JetBrains+Mono&display=swap');
+$quarto-font-heading: 'Inter', sans-serif;
+$quarto-font-base: 'Open Sans', sans-serif;
+$quarto-font-monospace: 'JetBrains Mono', monospace;
+
+// link colors
+$link-color: #FF318C !default;
+
+
+// Primary/body text
+$font-family-sans-serif: $quarto-font-base;
+$presentation-font-size-root: 40px;
+
+// Headings
+$presentation-heading-font: $quarto-font-heading;
+$presentation-heading-font-weight: normal;
+$headingMargin: 0 0 70px 0;
+
+// margins
+$presentation-block-margin: 12px !default;
+
+// --- derive reveal versions of presentation variables for finer-grained override ---
+
+$revealjs-block-margin: $presentation-block-margin !default;
+
+// Vertical spacing between blocks of text
+$blockMargin: $revealjs-block-margin !default;
+
+// Code blocks
+$font-family-monospace: $quarto-font-monospace;
+
+/*-- scss:rules --*/
+
+// anchor links
+a {
+    text-decoration: underline !important;
+}
+
+.reveal p {
+    font-size: 28px;
+}
+
+// lists
+
+// Unordered lists
+
+.reveal ul {
+    font-size: 28px;
+    padding-left: .5em;
+}
+
+.reveal ul li {
+    padding-left: 1em;
+}
+
+// Figures
+.reveal figure {
+    > figcaption{
+        font-size: .5em !important;
+        text-align: center;
+    }
+}
