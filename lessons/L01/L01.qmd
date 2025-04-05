@@ -2,6 +2,16 @@
 title: "Introducción a Mobile Testing"
 format:
   quarto-kotlin-theme-revealjs: default
+logo: assets/img/logo.png
+author:
+  - name: Kevin A. Hernández Rostrán
+    degrees:
+      - M.Sc.
+    orcid: 0009-0001-7682-0350
+    email: khernandez@ucenfotec.ac.cr
+    affiliation:
+      - name: Universidad Cenfotec
+        url: https://ucenfotec.ac.cr/
 ---
 
 ## Lección 01: Introducción a Mobile Testing
@@ -13,16 +23,6 @@ format:
 *   AAA (Arrange, Act, Assert)
 *   Importancia de las pruebas en dispositivos móviles
 *   Tipos de pruebas móviles
-*   Entorno de pruebas móviles
-*   Metodología Tradicional
-*   Metodología Ágil
-*   Pruebas Unitarias
-*   Pruebas de Regresión
-*   Pruebas de Integración
-*   Pruebas Funcionales
-*   Pruebas de Seguridad
-*   Pruebas de Carga
-*   Pruebas de Aceptación del Usuario
 *   Pros y Contras del Desarrollo Tradicional
 *   Pros y Contras del Desarrollo TDD
 
