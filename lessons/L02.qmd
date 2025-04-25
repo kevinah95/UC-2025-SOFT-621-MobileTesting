@@ -1,0 +1,163 @@
+---
+title:   "Lección 02: Pruebas Instrumentadas"
+format:
+  quarto-kotlin-theme-revealjs: default
+author:
+    - name: Kevin A. Hernández Rostrán
+      degrees:
+        - M.Sc.
+      orcid: 0009-0001-7682-0350
+      email: khernandez@ucenfotec.ac.cr
+      affiliation:
+        - name: Universidad Cenfotec
+          url: https://ucenfotec.ac.cr/
+---
+
+##   Lección 02: Pruebas Instrumentadas
+
+###   Agenda
+
+* ¿Qué son las Pruebas Instrumentadas?
+* Pruebas Instrumentadas vs. Pruebas Unitarias
+* Android JUnit Runner
+* Conceptos Básicos de Pruebas de Interfaz de Usuario (UI)
+* Espresso para Pruebas de Interfaz de Usuario
+* Pruebas de Interfaz de Usuario en Compose
+* Buenas Prácticas para Pruebas de Interfaz de Usuario
+
+##   ¿Qué son las Pruebas Instrumentadas?
+
+* Las pruebas instrumentadas son pruebas que se ejecutan en un dispositivo o emulador Android.
+* Tienen acceso a las API de `Instrumentation`, lo que les permite interactuar con el sistema Android y los componentes de la aplicación.
+* "Las pruebas de la interfaz de usuario suelen ser pruebas instrumentadas que verifican el comportamiento correcto de la interfaz de usuario."
+
+##   Pruebas Instrumentadas vs. Pruebas Unitarias
+
+* **Pruebas Unitarias:**
+    * Se ejecutan en la JVM local.
+    * Ejecución rápida.
+    * Se centran en probar unidades individuales de código (funciones, clases).
+    * No requieren un dispositivo o emulador Android.
+* **Pruebas Instrumentadas:**
+    * Se ejecutan en un dispositivo o emulador Android.
+    * Ejecución más lenta debido a la implementación.
+    * Se centran en probar las interacciones entre los componentes y el sistema Android.
+    * Esenciales para las pruebas de la interfaz de usuario y las pruebas de integración.
+
+##   Android JUnit Runner
+
+* `AndroidJUnitRunner` es el ejecutor de pruebas para las pruebas instrumentadas de Android.
+* Permite ejecutar pruebas JUnit en dispositivos Android.
+* Se configura en el archivo `build.gradle.kts`:
+
+```kotlin
+    android {
+        defaultConfig {
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+    }
+
+    dependencies {
+        androidTestImplementation("androidx.test.ext:junit-ktx:1.1.5")
+        androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    }
+```
+
+## Conceptos Básicos de Pruebas de Interfaz de Usuario (UI)
+
+- Las pruebas de la interfaz de usuario verifican el comportamiento y la apariencia de la interfaz de usuario de tu aplicación.
+- Simulan las interacciones del usuario como clics, escritura y desplazamiento.
+- Consideraciones clave:
+  - Encontrar elementos de la interfaz de usuario.
+  - Realizar acciones en esos elementos.
+  - Afirmar que la interfaz de usuario se comporta como se espera.
+
+## Espresso para Pruebas de Interfaz de Usuario
+
+Espresso es una biblioteca de pruebas de Android para escribir pruebas de interfaz de usuario confiables.
+
+Proporciona API para:
+
+- Encontrar vistas (`onView`).
+- Realizar acciones (`perform`).
+- Hacer afirmaciones (`check`).
+
+## Ejemplo
+
+```kotlin
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class ExampleInstrumentedTest {
+
+    @get:Rule
+    val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+
+    @Test
+    fun testButtonClick() {
+        onView(withId(R.id.miBoton))
+            .perform(click())
+
+        onView(withId(R.id.miTextView))
+            .check(matches(withText("¡Botón clickeado!")))
+    }
+}
+```
+## Pruebas de Interfaz de Usuario en Compose
+
+Compose UI también tiene API de pruebas para verificar funciones componibles.
+
+`ComposeTestRule` se utiliza para controlar la composición y proporcionar acceso a la interfaz de usuario.
+
+Encontrar nodos, realizar acciones y hacer afirmaciones son clave.
+
+## Ejemplo:
+
+```kotlin
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import org.junit.Rule
+import org.junit.Test
+
+class ComposeExampleTest {
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    @Test
+    fun testButtonInteraction() {
+        composeTestRule.setContent {
+            MiPantallaComposable()  // Reemplazar con tu Composable
+        }
+
+        composeTestRule.onNodeWithText("Haz clic aquí").performClick()
+
+        composeTestRule.onNodeWithText("Botón Clicked").assertExists()
+    }
+}
+```
+
+## Buenas Prácticas para Pruebas de Interfaz de Usuario
+- Mantener las pruebas independientes: Las pruebas no deben depender del estado de otras pruebas.
+- Escribir pruebas claras y concisas: Facilitar la comprensión de lo que verifica cada prueba.
+- Usar selectores significativos: Elegir formas robustas de encontrar elementos de la interfaz de usuario (por ejemplo, ID de recursos, descripciones de contenido).
+
+## Buenas Prácticas para Pruebas de Interfaz de Usuario
+
+- Minimizar la inestabilidad: Evitar sleeps y waits; utilizar las funciones de sincronización de Espresso.
+- Probar en dispositivos reales cuando sea posible: Los emuladores son útiles, pero pueden no replicar perfectamente el comportamiento del mundo real.
+- Seguir el patrón GWT: Given(arrange), When(act), Then(assert) para estructurar tus pruebas.
+
+## Rutina de pensamiento: "Veo, pienso, me pregunto"
+- Veo: ¿Qué observan sobre las diferencias entre Pruebas Unitarias y Pruebas Instrumentadas? ¿Cómo se usan Espresso y Compose TestRule?
+- Pienso: ¿Qué desafíos anticipan al escribir pruebas de la interfaz de usuario? ¿Cómo pueden las Buenas Prácticas ayudar a crear pruebas más efectivas?
+- Me pregunto: ¿Cuándo es más apropiado usar las API de pruebas de Espresso vs. Compose? ¿Cómo se integran las pruebas de la interfaz de usuario en un pipeline de CI/CD?

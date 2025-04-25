@@ -5,4 +5,7 @@ version: '3'
 tasks:
   l01:
     cmds:
-      - quarto preview lessons/L01/L01.qmd --output-dir output
+      - quarto preview lessons/L01.qmd --output-dir output
+  l02:
+    cmds:
+      - quarto preview lessons/L02.qmd --output-dir output
