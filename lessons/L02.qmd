@@ -1,7 +1,8 @@
 ---
 title:   "Lección 02: Pruebas Instrumentadas"
 format:
-  quarto-kotlin-theme-revealjs: default
+  quarto-kotlin-theme-revealjs:
+    incremental: true
 author:
     - name: Kevin A. Hernández Rostrán
       degrees:
