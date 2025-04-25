@@ -6,6 +6,6 @@ contributes:
   formats:
     revealjs:
       theme: [custom.scss]
-      logo: logo.svg
+      logo: logo.png
       highlight-style: tango
 

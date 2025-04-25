@@ -2,7 +2,6 @@
 title: "Introducción a Mobile Testing"
 format:
   quarto-kotlin-theme-revealjs: default
-logo: assets/img/logo.png
 author:
   - name: Kevin A. Hernández Rostrán
     degrees:
