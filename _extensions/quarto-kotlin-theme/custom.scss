@@ -15,7 +15,7 @@ $link-color: #FF318C !default;
 
 // Primary/body text
 $font-family-sans-serif: $quarto-font-base;
-$presentation-font-size-root: 40px;
+$presentation-font-size-root: 40px !default;
 
 // Headings
 $presentation-heading-font: $quarto-font-heading;
@@ -69,4 +69,10 @@ a {
 
 .reveal .slide-logo {
   max-height: 2em !important;
+}
+
+.reveal .footer {
+  p {
+    font-size: 20px;
+  }
 }

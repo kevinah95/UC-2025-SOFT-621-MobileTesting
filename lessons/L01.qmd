@@ -1,7 +1,8 @@
 ---
 title: "Introducción a Mobile Testing"
 format:
-  quarto-kotlin-theme-revealjs: default
+  quarto-kotlin-theme-revealjs:
+    footer: "Universidad CENFOTEC ©"
 author:
   - name: Kevin A. Hernández Rostrán
     degrees:

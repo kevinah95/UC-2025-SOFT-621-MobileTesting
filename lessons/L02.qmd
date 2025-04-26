@@ -3,6 +3,7 @@ title:   "Lección 02: Pruebas Instrumentadas"
 format:
   quarto-kotlin-theme-revealjs:
     incremental: true
+    footer: "Universidad CENFOTEC ©"
 author:
     - name: Kevin A. Hernández Rostrán
       degrees:
