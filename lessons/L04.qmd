@@ -1,0 +1,200 @@
+---
+title:   "Semana 3: Tendencias en Tecnologías Móviles"
+format:
+  kotlin-quarto-revealjs-theme-revealjs:
+    incremental: true
+    footer: "Universidad CENFOTEC ©"
+    logo: imgs/logo.png
+author:
+    - name: Kevin A. Hernández Rostrán
+      degrees:
+        - M.Sc.
+      orcid: 0009-0001-7682-0350
+      email: khernandez@ucenfotec.ac.cr
+      affiliation:
+        - name: Universidad Cenfotec
+          url: https://ucenfotec.ac.cr/
+---
+
+## Agenda de Hoy  AGENDA
+
+1.  **Bienvenida y Conexión:**
+    * ¿Cómo van esos proyectos con Kotlin Multiplatform?
+2.  **El Panorama Móvil Actual:**
+    * ¿Por qué es crucial estar al día?
+3.  **Tendencias Clave en Tecnologías Móviles para 2024-2025:**
+    * Profundizaremos en las más impactantes.
+
+## Agenda de Hoy  AGENDA
+
+4.  **Kotlin Multiplatform (KMP) en el Epicentro de las Tendencias:**
+    * ¿Cómo KMP nos ayuda a abordar estos cambios?
+5.  **Aplicación a "Proyecto 04":**
+    * Ideas y consideraciones para sus proyectos.
+    * Revisión del backlog.
+6.  **Discusión y Próximos Pasos.**
+
+---
+
+## ¿Por Qué Nos Importan las Tendencias Móviles? 🤔
+
+* **Expectativas del Usuario:** Los usuarios se acostumbran rápidamente a nuevas funcionalidades y experiencias.
+* **Ventaja Competitiva:** Adoptar tendencias puede diferenciar una aplicación.
+* **Eficiencia en el Desarrollo:** Nuevas herramientas y enfoques pueden optimizar el trabajo.
+* **Relevancia Profesional:** ¡Conocerlas es clave para su futuro como desarrolladores!
+* **Innovación:** Abren puertas a soluciones creativas y novedosas.
+
+---
+
+## Tendencia 1: Desarrollo Multiplataforma Inteligente 💡
+
+* **El Desafío:** Crear experiencias nativas de alta calidad para iOS y Android sin duplicar TODO el esfuerzo.
+* **La Evolución:** De "escribir una vez, ejecutar en cualquier lugar" a "escribir lógica una vez, adaptar UI nativa".
+* **Aquí Entra `Kotlin Multiplatform (KMP)`:**
+    * Permite compartir lógica de negocio, conectividad, manejo de datos, etc., entre plataformas (Android, iOS, Desktop, Web).
+    * Mientras se mantiene la flexibilidad de construir interfaces de usuario (UI) 100% nativas.
+    * **Pregunta para ustedes:** ¿Qué partes de sus proyectos actuales en KMP están compartiendo? ¿Qué beneficios (o desafíos) han notado?
+
+---
+
+## Tendencia 2: Inteligencia Artificial (IA) y Machine Learning (ML) On-Device 🧠📱
+
+* **¿Qué es?** Ejecutar modelos de IA/ML directamente en el dispositivo móvil.
+* **Ventajas:**
+    * **Menor Latencia:** Respuestas más rápidas (no depende de la red).
+    * **Privacidad Mejorada:** Los datos sensibles no necesitan salir del dispositivo.
+    * **Funcionamiento Offline:** Capacidades inteligentes incluso sin conexión.
+
+## Tendencia 2: Inteligencia Artificial (IA) y Machine Learning (ML) On-Device 🧠📱
+
+* **Ejemplos:**
+    * Reconocimiento facial/de objetos en tiempo real (filtros de cámara).
+    * Traducción instantánea.
+    * Sugerencias personalizadas y predictivas.
+    * Siri, Google Assistant (procesamiento local para algunas tareas).
+* **KMP y IA/ML:** KMP puede manejar la lógica de negocio y la preparación de datos, interactuando con bibliotecas nativas de IA/ML (Core ML en iOS, TensorFlow Lite en Android).
+
+---
+
+## Tendencia 3: Conectividad 5G y Más Allá 🚀
+
+* **Impacto del 5G:**
+    * **Velocidad Ultra-Rápida:** Descargas y subidas significativamente más veloces.
+    * **Baja Latencia:** Interacciones casi instantáneas.
+    * **Mayor Capacidad:** Más dispositivos conectados simultáneamente.
+
+## Tendencia 3: Conectividad 5G y Más Allá 🚀
+
+* **Nuevas Posibilidades para Apps Móviles:**
+    * Experiencias de Realidad Aumentada (AR) y Realidad Virtual (VR) más fluidas y ricas.
+    * Streaming de video 4K/8K y juegos en la nube sin interrupciones.
+    * Aplicaciones IoT más robustas y en tiempo real.
+    * Comunicaciones enriquecidas (videollamadas de alta fidelidad).
+* **Consideraciones:** ¿Cómo podrían sus apps aprovechar estas capacidades? ¿Mayor consumo de datos?
+
+---
+
+## Tendencia 4: Realidad Aumentada (AR) y Virtual (VR) Integradas 🕶️
+
+* **AR Móvil:** Superponer información digital al mundo real a través de la cámara del móvil.
+    * ARKit (iOS), ARCore (Android).
+    * Usos: Pruebas virtuales de productos (ropa, muebles), juegos, educación, navegación.
+* **VR Móvil:** Experiencias inmersivas (aunque los headsets dedicados lideran, el móvil sigue siendo un punto de entrada).
+* **Desafíos:** Rendimiento, duración de batería, diseño de UX para AR/VR.
+* **KMP y AR/VR:** La lógica común (ej. gestión de catálogos de productos 3D) puede estar en KMP, mientras la renderización y la interacción con ARKit/ARCore se manejan en código nativo.
+
+---
+
+## Tendencia 5: El Auge de los Dispositivos Plegables y Adaptabilidad de UI 📲↔️📱
+
+* **Nuevos Formatos:** Smartphones que se doblan y ofrecen múltiples estados de pantalla (plegado, desplegado, modo tablet).
+* **El Reto:**
+    * Las UIs deben ser fluidas y adaptarse dinámicamente a diferentes tamaños, aspect ratios y posturas del dispositivo.
+    * Continuidad de la experiencia entre estados.
+
+## Tendencia 5: El Auge de los Dispositivos Plegables y Adaptabilidad de UI 📲↔️📱
+
+* **Consideraciones para el Desarrollo:**
+    * Uso de layouts responsivos/adaptativos.
+    * Jetpack Compose (Android) y SwiftUI (iOS) facilitan esto.
+* **KMP y UIs Adaptables:** Mientras la UI es nativa, KMP puede gestionar el estado y la lógica que determina cómo la UI debe responder a los cambios de configuración de pantalla. `Compose Multiplatform` para UI compartida es una opción, pero si están haciendo UI nativa, la lógica de presentación en KMP sigue siendo clave.
+
+---
+
+## Tendencia 6: Mayor Foco en Seguridad y Privacidad 🔒
+
+* **Contexto:**
+    * Usuarios más conscientes de sus datos.
+    * Regulaciones más estrictas (GDPR, CCPA).
+    * Las plataformas (Apple, Google) imponen políticas más rigurosas.
+* **Tecnologías y Prácticas Clave:**
+    * Autenticación biométrica (huella, rostro).
+    * Encriptación de datos en reposo y en tránsito.
+    * Transparencia en el uso de permisos.
+    * Privacidad por diseño (Privacy by Design).
+    * "Privacy Sandbox" en Android.
+* **KMP:** La lógica de manejo seguro de datos, validaciones y comunicación con backends seguros puede implementarse en el código compartido de KMP.
+
+---
+
+## Tendencia 7: Internet de las Cosas (IoT) y Wearables ⌚️🏠🚗
+
+* **Móvil como Hub:** El smartphone sigue siendo el centro de control para muchos dispositivos IoT y wearables.
+* **Ejemplos:**
+    * Smartwatches, pulseras de actividad.
+    * Hogar inteligente (luces, termostatos, seguridad).
+    * Salud conectada.
+    * Automóviles conectados.
+* **Desafíos:** Interoperabilidad, seguridad, gestión de conexiones (Bluetooth, Wi-Fi, NFC).
+* **KMP para IoT/Wearables:** KMP puede ser muy útil para compartir la lógica de comunicación y sincronización de datos entre la app principal y las apps complementarias para wearables o la interacción con dispositivos IoT.
+
+---
+
+## Kotlin Multiplatform (KMP): Un Aliado Estratégico 🤝
+
+**¿Cómo KMP está impactando (o podría impactar) la forma en que abordan las características de su "Proyecto 04"?**
+
+* **Reutilización de Código:**
+    * Lógica de negocio, validaciones.
+    * Acceso a datos (networking, bases de datos locales con SQLDelight).
+    * Modelos de datos, algoritmos.
+    * Conectividad (Ktor).
+* **Flexibilidad Nativa:**
+    * UI 100% nativa (XML/Jetpack Compose en Android, UIKit/SwiftUI en iOS).
+    * Acceso a APIs específicas de plataforma (sensores, ARKit, CoreML) a través de mecanismos de `expect/actual`.
+* **Adaptabilidad a Tendencias:**
+    * Permite implementar la lógica subyacente a muchas de estas tendencias de forma compartida.
+    * Facilita la iteración rápida y la experimentación.
+
+---
+
+## Aplicando Tendencias a "Proyecto 04" 🛠️
+
+* **No es necesario implementar TODO**, pero sí considerar:
+    * **KMP:** Ya lo están usando. ¡Sigan explorando su potencial!
+    * **IA/ML On-Device:** ¿Hay alguna funcionalidad que podría beneficiarse de inteligencia simple local? (Ej: sugerencias basadas en uso previo, clasificación básica).
+    * **Seguridad y Privacidad:** ¡Fundamental! Aseguren el manejo de datos, si aplica.
+    * **UI Adaptable:** Piensen en cómo su app se vería en diferentes tamaños de pantalla (aunque no sean plegables). Buenas prácticas de UI responsiva.
+* **Desafío Adicional (como sugirió la profesora):**
+    * Si tuvieran que AÑADIR una característica inspirada en una de estas tendencias que demande un esfuerzo técnico considerable, ¿cuál sería?
+    * ¿Cómo impactaría su backlog y prioridades?
+
+---
+
+## Discusión y Preguntas 💬
+
+* ¿Qué tendencia les parece más emocionante o disruptiva?
+* ¿Cuál ven más factible de explorar (aunque sea conceptualmente) en sus proyectos?
+* ¿Qué desafíos técnicos prevén al intentar incorporar alguna de estas novedades?
+* Preguntas sobre KMP y estas tendencias.
+
+---
+
+## Próximos Pasos 🚀
+
+* **Continuar con el desarrollo de Proyecto 04.**
+* **Pensar críticamente:** ¿Cómo las decisiones técnicas que toman hoy preparan (o no) sus apps para el futuro?
+* **Investigación:** Si alguna tendencia les interesa, ¡profundicen!
+* **Para la próxima clase/revisión:** Estén listos para discutir cómo han priorizado tareas técnicas (especialmente si el tiempo apremia).
+
+¡Gracias!

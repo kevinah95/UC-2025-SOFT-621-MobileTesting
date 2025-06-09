@@ -1,0 +1,278 @@
+---
+title:   "Semana 4: Elementos de Arquitectura de Software"
+format:
+  kotlin-quarto-revealjs-theme-revealjs:
+    incremental: true
+    footer: "Universidad CENFOTEC ©"
+    logo: imgs/logo.png
+author:
+    - name: Kevin A. Hernández Rostrán
+      degrees:
+        - M.Sc.
+      orcid: 0009-0001-7682-0350
+      email: khernandez@ucenfotec.ac.cr
+      affiliation:
+        - name: Universidad Cenfotec
+          url: https://ucenfotec.ac.cr/
+---
+
+
+## Agenda de Hoy 🎯
+
+-   **Elementos de Arquitectura de Software**
+    -   Estilos Arquitectónicos
+    -   Servicios y Arquitecturas Orientadas a Servicios (SOA)
+    -   Arquitecturas con Dispositivos Móviles
+    -   Modelaje con UML de los Estilos Arquitectónicos
+
+---
+
+## 1. Estilos Arquitectónicos 🏛️
+
+-   **¿Qué son?**
+    -   Un conjunto de principios y patrones que guían la organización de un sistema de software.
+    -   Definen los componentes, sus responsabilidades y las relaciones e interacciones entre ellos.
+    -   Proporcionan soluciones probadas a problemas recurrentes.
+
+-   **Importancia:**
+    -   Toma de decisiones tempranas con gran impacto.
+    -   Facilitan la comunicación entre *stakeholders*.
+    -   Afectan la calidad del sistema (rendimiento, seguridad, mantenibilidad).
+
+## Ejemplos Comunes de Estilos Arquitectónicos
+
+-   **Arquitectura en Capas (Layered):**
+    -   Componentes organizados en capas horizontales.
+    -   Cada capa ofrece servicios a la capa superior y consume servicios de la inferior.
+    -   Ej: Capa de Presentación, Lógica de Negocio, Acceso a Datos.
+
+-   **Cliente-Servidor:**
+    -   Un servidor provee servicios a múltiples clientes que los solicitan.
+    -   Común en aplicaciones web y de red.
+
+## Ejemplos Comunes de Estilos Arquitectónicos
+
+-   **Modelo-Vista-Controlador (MVC):**
+    -   Separa la lógica de negocio (Modelo), la interfaz de usuario (Vista) y el control de flujo (Controlador).
+    -   Popular en aplicaciones web y de escritorio.
+
+-   **Microservicios:**
+    -   El sistema se compone de pequeños servicios independientes, cada uno con una responsabilidad específica.
+    -   Despliegue y escalabilidad independientes.
+
+## 2. Servicios y Arquitecturas Orientadas a Servicios (SOA) ⚙️
+
+-   **¿Qué es un Servicio?**
+    -   Una unidad de funcionalidad autocontenida y bien definida.
+    -   Puede ser descubierto, invocado y compuesto con otros servicios.
+    -   Ejemplos: servicio de autenticación, servicio de catálogo de productos.
+
+-   **Arquitectura Orientada a Servicios (SOA):**
+    -   Un estilo arquitectónico que estructura una aplicación como una colección de servicios que se comunican entre sí.
+    -   Los servicios son interoperables y reutilizables.
+    -   Comunicación basada en estándares (ej. SOAP, REST).
+
+---
+
+### Principios Clave de SOA
+
+-   **Contratos de servicio estandarizados:** Interfaces bien definidas.
+-   **Bajo acoplamiento (Loose coupling):** Los servicios son independientes.
+-   **Abstracción de servicio:** Se oculta la lógica interna.
+-   **Reusabilidad de servicio:** Se diseñan para ser reutilizados.
+-   **Autonomía de servicio:** Controlan su propia lógica y datos.
+-   **Descubrimiento de servicio:** Mecanismos para encontrar servicios disponibles.
+
+---
+
+### De SOA a Microservicios
+
+-   **Microservicios** pueden considerarse una forma más granular y específica de SOA.
+-   **Diferencias clave:**
+    -   **Tamaño y Alcance:** Microservicios son más pequeños y enfocados.
+    -   **Gobernanza:** SOA tiende a ser más centralizada, Microservicios más descentralizada.
+    -   **Despliegue:** Microservicios se despliegan de forma independiente.
+
+---
+
+## 3. Arquitecturas con Dispositivos Móviles 📱
+
+-   **Desafíos Únicos:**
+    -   **Recursos Limitados:** Batería, CPU, memoria, almacenamiento.
+    -   **Conectividad Variable:** Redes lentas, intermitentes, offline.
+    -   **Diversidad de Dispositivos:** Diferentes tamaños de pantalla, resoluciones, SO.
+    -   **Experiencia de Usuario (UX):** Interfaz táctil, notificaciones, usabilidad.
+    -   **Seguridad:** Protección de datos en el dispositivo y en tránsito.
+
+---
+
+### Enfoques Arquitectónicos Móviles Comunes
+
+-   **Nativa:**
+    -   Desarrollada específicamente para una plataforma (iOS - Swift/Objective-C, Android - Kotlin/Java).
+    -   Mejor rendimiento y acceso a características del dispositivo.
+
+-   **Híbrida:**
+    -   Combina tecnologías web (HTML, CSS, JavaScript, Kotlin) con un contenedor nativo.
+    -   Frameworks: Ionic, React Native, Flutter, KMP.
+    -   Desarrollo multiplataforma más rápido.
+
+-   **Aplicación Web Progresiva (PWA):**
+    -   Aplicación web que ofrece una experiencia similar a la nativa.
+    -   Accesible a través del navegador, puede funcionar offline, notificaciones push.
+
+---
+
+### Consideraciones Arquitectónicas Móviles
+
+-   **Cliente-Servidor:** La mayoría de las apps móviles interactúan con un backend.
+    -   API RESTful o GraphQL para la comunicación.
+-   **Manejo de Datos Offline:**
+    -   Almacenamiento local (SQLite, Core Data, Realm).
+    -   Estrategias de sincronización.
+-   **Patrones de Diseño UI/UX:**
+    -   MVC, MVP (Model-View-Presenter), MVVM (Model-View-ViewModel) en el cliente.
+-   **Seguridad:**
+    -   Autenticación y autorización.
+    -   Cifrado de datos.
+    -   Comunicación segura (HTTPS).
+
+---
+
+## 4. Modelaje con UML de los Estilos Arquitectónicos 📊
+
+-   **Lenguaje de Modelado Unificado (UML):**
+    -   Un lenguaje gráfico estándar para visualizar, especificar, construir y documentar los artefactos de un sistema de software.
+    -   Ayuda a comunicar la arquitectura de forma clara.
+
+-   **¿Por qué modelar estilos arquitectónicos con UML?**
+    -   Para entender y comunicar la estructura y el comportamiento del sistema.
+    -   Para analizar y validar decisiones de diseño.
+    -   Para generar documentación.
+
+---
+
+### Diagramas UML Útiles para la Arquitectura
+
+-   **Diagrama de Componentes:**
+    -   Muestra la organización y las dependencias entre los componentes de software.
+    -   Ideal para representar estilos como en Capas o Microservicios.
+    -   Componentes, interfaces, puertos, conectores.
+
+-   **Diagrama de Despliegue:**
+    -   Describe la configuración física del hardware y cómo se despliegan los componentes de software en él.
+    -   Útil para Cliente-Servidor, sistemas distribuidos.
+    -   Nodos, artefactos, asociaciones de comunicación.
+
+---
+
+## Diagramas UML Útiles para la Arquitectura
+
+-   **Diagrama de Paquetes:**
+    -   Agrupa elementos del modelo (clases, componentes) en espacios de nombres.
+    -   Ayuda a organizar modelos grandes y mostrar la modularidad.
+
+-   **Diagramas de Interacción (Secuencia, Comunicación):**
+    -   Muestran cómo los objetos (o componentes) interactúan a lo largo del tiempo.
+    -   Útiles para visualizar el flujo de mensajes en SOA o MVC.
+
+---
+
+### Ejemplo: Modelar Arquitectura en Capas con UML
+
+Diagrama de Componentes
+```{mermaid}
+graph TD
+    Client -->|HTTP| WebServer
+    WebServer -->|API calls| ApplicationServer
+    ApplicationServer -->|JDBC| Database
+
+    subgraph ClientSide
+        Client[<<component>> Client]
+    end
+
+    subgraph ServerSide
+        WebServer[<<component>> Web Server]
+        ApplicationServer[<<component>> Application Server]
+        Database[<<component>> Database]
+    end
+```
+---
+
+### Ejemplo: Modelar Arquitectura en Capas con UML
+
+- Diagrama de Despliegue
+
+```{mermaid}
+graph TD
+    Client -->|HTTP| WebServer
+    WebServer -->|API calls| ApplicationServer
+    ApplicationServer -->|JDBC| Database
+
+    subgraph ClientSide
+        Client[<<component>> Client]
+    end
+
+    subgraph ServerSide
+        WebServer[<<component>> Web Server]
+        ApplicationServer[<<component>> Application Server]
+        Database[<<component>> Database]
+    end
+```
+
+---
+
+### Ejemplo: Modelar Arquitectura en Capas con UML
+
+Diagrama de Paquetes
+```{mermaid}
+graph TD
+    subgraph "com.myapp"
+        ui["ui"]
+        service["service"]
+        model["model"]
+        utils["utils"]
+    end
+
+    ui --> service
+    service --> model
+    service --> utils
+    ui --> utils
+```
+
+---
+
+### Ejemplo: Modelar Arquitectura en Capas con UML
+
+Diagramas de Interacción (Secuencia)
+```{mermaid}
+sequenceDiagram
+    participant User
+    participant UI
+    participant Controller
+    participant Service
+    participant DB
+
+    User->>UI: Click "Login"
+    UI->>Controller: login(username, password)
+    Controller->>Service: authenticateUser()
+    Service->>DB: queryUserCredentials()
+    DB-->>Service: userData
+    Service-->>Controller: authResult
+    Controller-->>UI: displayResult()
+```
+---
+
+### Ejemplo: Modelar Arquitectura en Capas con UML
+
+Diagramas de Interacción (Comunicación)
+```{mermaid}
+graph LR
+    User -->|click login| UI
+    UI -->|calls| Controller
+    Controller -->|calls| Service
+    Service -->|queries| DB
+    DB -->|returns data| Service
+    Service -->|returns result| Controller
+    Controller -->|updates| UI
+```

@@ -1,0 +1,136 @@
+---
+title:   "Lección 03: Pruebas de Captura de Pantalla y Pruebas en Kotlin Multiplatform"
+format:
+  kotlin-quarto-revealjs-theme-revealjs:
+    incremental: true
+    footer: "Universidad CENFOTEC ©"
+    logo: imgs/logo.png
+author:
+    - name: Kevin A. Hernández Rostrán
+      degrees:
+        - M.Sc.
+      orcid: 0009-0001-7682-0350
+      email: khernandez@ucenfotec.ac.cr
+      affiliation:
+        - name: Universidad Cenfotec
+          url: https://ucenfotec.ac.cr/
+---
+
+##  Agenda
+
+* Introducción a las Pruebas de Captura de Pantalla
+* Herramientas para Pruebas de Captura de Pantalla
+* Implementación de Pruebas de Captura de Pantalla en Android
+* Introducción a Kotlin Multiplatform
+* Estrategias de Pruebas en Kotlin Multiplatform
+* Ejemplos de Pruebas en KMP
+* Buenas Prácticas para Pruebas en KMP
+
+##   Introducción a las Pruebas de Captura de Pantalla
+
+* ¿Qué son las Pruebas de Captura de Pantalla?
+    * Las pruebas de captura de pantalla, también conocidas como pruebas de regresión visual, son una técnica que verifica la apariencia visual de la interfaz de usuario de una aplicación.
+    * Implican capturar capturas de pantalla de componentes o pantallas de la interfaz de usuario y compararlas con imágenes de referencia para detectar cambios visuales no deseados.
+* Importancia
+    * Asegura la coherencia de la interfaz de usuario en diferentes dispositivos y versiones del sistema operativo.
+    * Detecta regresiones visuales causadas por cambios en el código.
+    * Automatiza el proceso de revisión visual.
+
+##   Herramientas para Pruebas de Captura de Pantalla
+
+* Se puede utilizar una variedad de herramientas y bibliotecas para las pruebas de captura de pantalla:
+    * **iOS Snapshot TestCase:** Un marco para pruebas de instantáneas en iOS.
+    * **Jest Image Snapshot:** Un matcher de Jest para pruebas de regresión visual en aplicaciones web.
+    * **Screenshot:** Para compose.
+
+##  Implementación de Pruebas de Captura de Pantalla en Android (con Shot)
+
+* Shot simplifica las pruebas de captura de pantalla en Android.
+* Automatiza el proceso de:
+    * Renderizar vistas o componibles.
+    * Capturar capturas de pantalla.
+    * Comparar con las imágenes de referencia.
+    * Generar informes.
+
+##  Pruebas de Captura de Pantalla en Android
+
+
+```kotlin
+    import ...
+
+    class MyComposeScreenshotTest {
+
+        @get:Rule val shotRule = ShotRule(this)
+        @get:Rule val composeTestRule = createComposeRule()
+
+        @Test
+        fun testMyComposable() {
+            composeTestRule.setContent {
+                Text("¡Hola, Prueba de Captura de Pantalla!")
+            }
+
+            shotRule.compareScreenshot(composeTestRule.onRoot(), "mi_composable")
+        }
+    }
+```
+
+##   Introducción a Kotlin Multiplatform (KMP)
+
+* ¿Qué es Kotlin Multiplatform?
+    * Kotlin Multiplatform (KMP) es una tecnología que permite a los desarrolladores escribir código una vez y compartirlo entre diferentes plataformas, incluyendo Android, iOS, web y escritorio.
+    * Permite la reutilización de código al tiempo que permite implementaciones específicas de la plataforma cuando es necesario.
+* Beneficios
+    * Mayor uso compartido de código y reducción del tiempo de desarrollo.
+    * Coherencia mejorada entre plataformas.
+    * Capacidad para aprovechar las características y herramientas de Kotlin.
+
+##   Estrategias de Pruebas en Kotlin Multiplatform
+
+* Las pruebas de proyectos KMP involucran estrategias para el código compartido y el específico de la plataforma:
+    * **Pruebas de Código Compartido:**
+        * Escriba pruebas unitarias en el conjunto de fuentes `commonTest` para verificar la lógica compartida entre plataformas.
+        * Utilice marcos como KotlinTest para escribir pruebas expresivas.
+    * **Pruebas de Código Específico de la Plataforma:**
+        * Utilice marcos de pruebas específicos de la plataforma (por ejemplo, JUnit en Android, XCTest en iOS) para probar el código que interactúa con las API de la plataforma.
+        * Considere las pruebas de integración para verificar la interacción entre el código compartido y el código específico de la plataforma.
+
+##   Ejemplos de Pruebas en KMP
+
+* **Ejemplo de Prueba de Código Compartido (KotlinTest):**
+
+```kotlin
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+
+class GreetingTest : StringSpec({
+    "El saludo debe devolver un mensaje personalizado" {
+        val saludo = Greeting()  // Suponiendo que existe una clase Greeting
+        saludo.greet("Kotlin") shouldBe "¡Hola, Kotlin!"
+    }
+})
+```
+##   Ejemplos de Pruebas en KMP
+
+* **Prueba Específica de la Plataforma Android (JUnit):**
+
+```kotlin
+import org.junit.Test
+import org.junit.Assert.assertEquals
+
+class AndroidPlatformTest {
+    @Test
+    fun testPlatformName() {
+        val plataforma = Platform() // Suponiendo que existe una clase Platform
+        assertEquals("Android", plataforma.name)
+    }
+}
+```
+
+## Buenas Prácticas para Pruebas en KMP
+* Priorizar las Pruebas de Código Compartido: Maximice la cobertura de la prueba en el conjunto de fuentes commonTest para garantizar que la lógica central esté bien probada.
+* Usar Abstracciones: Defina interfaces o clases abstractas en código compartido e impleméntelas en código específico de la plataforma para facilitar las pruebas.
+* Simular Dependencias de la Plataforma: Utilice bibliotecas de simulación para aislar el código compartido de las dependencias específicas de la plataforma durante las pruebas.
+
+## Buenas Prácticas para Pruebas en KMP
+* Probar en Dispositivos/Emuladores Reales: Pruebe el código específico de la plataforma en dispositivos o emuladores reales para detectar posibles problemas específicos de la plataforma.
+* Integración de CI/CD: Integre las pruebas de código compartido y específico de la plataforma en su pipeline de CI/CD para pruebas e informes automatizados.
