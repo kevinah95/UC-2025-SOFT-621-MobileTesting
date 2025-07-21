@@ -1,0 +1,807 @@
+---
+title:   "Diseño de Ingeniería"
+subtitle: "Diseño de Arquitectura"
+format:
+  kotlin-quarto-revealjs-theme-revealjs:
+    incremental: true
+    footer: "Universidad CENFOTEC ©"
+    logo: imgs/logo.png
+author:
+    - name: Kevin A. Hernández Rostrán
+      degrees:
+        - M.Sc.
+      orcid: 0009-0001-7682-0350
+      email: khernandez@ucenfotec.ac.cr
+      affiliation:
+        - name: Universidad Cenfotec
+          url: https://ucenfotec.ac.cr/
+---
+
+
+## Objetivos de la sesión 🎯
+
+- Distinguir entre paradigmas de programación (estructurado, orientado a objetos, funcional).
+- Comprender los 4 principios fundamentales de la POO (herencia, polimorfismo, abstracción, encapsulamiento).
+- Identificar y evitar code smells comunes en el diseño de software.
+- Aplicar los 5 principios SOLID con ejemplos prácticos en C#.
+- Analizar ejemplos de programación funcional en Haskell y Elixir.
+- Reflexionar sobre el impacto de SOLID en la mantenibilidad y calidad del software.
+
+---
+
+## 💭 Paradigmas de Programación
+
+> Un **paradigma** es un enfoque o modelo mental para resolver problemas usando código.
+
+---
+
+## 🤔 ¿Por qué importa el paradigma?
+
+- Determina cómo organizamos el código.
+- Influye en la mantenibilidad, flexibilidad y escalabilidad.
+- Algunos lenguajes soportan múltiples paradigmas (como C#, JavaScript, Python).
+
+---
+
+## 📋 Paradigmas más comunes
+
+| Paradigma              | Enfoque principal                                      |
+|------------------------|--------------------------------------------------------|
+| **Estructurado**       | Organizar código en secuencias, decisiones y ciclos.   |
+| **Orientado a Objetos**| Modelar entidades del mundo real como objetos.         |
+| **Funcional**          | Basado en funciones puras, sin estado mutable.         |
+
+---
+
+## 🟦 Programación Estructurada
+
+- Enfocada en **funciones y procedimientos** que procesan datos paso a paso.
+- Usa estructuras de control: `if`, `while`, `for`, `switch`.
+- Los datos y las funciones están **separados**.
+- Evita el uso de *goto*, promoviendo bloques bien definidos.
+
+---
+
+## 💻 Ejemplo en C - Procesamiento de estudiantes:
+
+<!-- language: c -->
+``` {.csharp .code-line-numbers}
+#include <stdio.h>
+
+struct Student {
+    char name[50];
+    int grade;
+};
+
+void printStudent(struct Student s) {
+    printf("Estudiante: %s, Nota: %d\n", s.name, s.grade);
+}
+
+int calculateAverage(struct Student students[], int count) {
+    int sum = 0;
+    for (int i = 0; i < count; i++) {
+        sum += students[i].grade;
+    }
+    return sum / count;
+}
+```
+
+**Lenguajes:** C, Pascal, FORTRAN, COBOL
+
+🧠 Ideal para: algoritmos, sistemas embebidos, programación de sistemas.
+
+---
+
+## 🟩 Programación Orientada a Objetos (POO)
+
+- Organiza el código en **clases y objetos** que encapsulan datos y comportamiento.
+- Usa **herencia, encapsulamiento, abstracción y polimorfismo**.
+- Los datos y métodos están **unidos** en la misma entidad.
+- Permite modelar estructuras complejas y dominios reales.
+
+---
+
+## 💻 Ejemplo en C\# - Sistema de estudiantes:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class Student
+{
+    public string Name { get; set; }
+    public int Grade { get; private set; }
+
+    public void UpdateGrade(int newGrade)
+    {
+        if (newGrade >= 0 && newGrade <= 100)
+            Grade = newGrade;
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine($"Estudiante: {Name}, Nota: {Grade}");
+    }
+}
+```
+
+**Lenguajes:** C#, Java, C++, Python, JavaScript
+
+Veremos esto a profundidad en esta sesión 👇
+
+---
+
+## 🟪 Programación Funcional
+
+- Basada en **funciones puras** (sin efectos colaterales).
+- **Inmutabilidad**: no se modifica el estado, se crean nuevas estructuras.
+- **Composición de funciones** como unidad principal.
+- Evita bucles tradicionales, prefiere recursión y funciones de orden superior.
+
+---
+
+## 💻 Ejemplo en Haskell - Procesamiento de estudiantes:
+
+<!-- language: haskell -->
+``` {.haskell .code-line-numbers}
+-- Definir el tipo de dato Student (nombre y nota)
+data Student = Student String Int
+
+-- Función para extraer la nota de un estudiante
+studentGrade :: Student -> Int
+studentGrade (Student _ grade) = grade  -- El _ ignora el nombre
+
+-- Calcular promedio de notas
+averageGrade :: [Student] -> Double
+averageGrade students =
+    fromIntegral (sum grades) / fromIntegral (length grades)
+    where grades = map studentGrade students  -- map aplica la función a todos
+
+-- Filtrar estudiantes que pasaron (nota >= 70)
+passedStudents :: [Student] -> [Student]
+passedStudents = filter (\s -> studentGrade s >= 70)  -- filter filtra por condición
+```
+
+---
+
+## 💻 Ejemplo en Elixir:
+
+<!-- language: elixir -->
+``` {.elixir .code-line-numbers}
+defmodule StudentProcessor do
+  # Función para calcular promedio
+  def average_grade(students) do
+    students
+    |> Enum.map(& &1.grade)        # Extraer todas las notas
+    |> Enum.sum()                  # Sumar todas las notas
+    |> Kernel./(length(students))  # Dividir por cantidad de estudiantes
+  end
+
+  # Función para filtrar estudiantes aprobados
+  def passed_students(students) do
+    Enum.filter(students, & &1.grade >= 70)  # Filtrar por nota >= 70
+  end
+end
+```
+
+**Lenguajes:** Haskell, Elixir, F#, Clojure, Erlang, Scala
+
+🧠 Muy útil en sistemas concurrentes, reactivos, o de alto paralelismo.
+
+---
+
+## ⚖️ Comparación general
+
+| Aspecto               | Estructurado       | POO                 | Funcional              |
+|------------------------|--------------------|----------------------|-------------------------|
+| **Unidad principal**   | Funciones/Procedimientos | Objetos              | Funciones puras         |
+| **Estado**             | Global o local      | Encapsulado en objetos | Inmutable               |
+| **Datos vs Comportamiento** | Separados        | Unidos en clases     | Funciones transforman datos |
+| **Control de flujo**   | Secuencia/condición | Interacción entre objetos | Composición de funciones |
+| **Reutilización**      | Llamadas a funciones | Herencia/Composición | Funciones de orden superior |
+| **Ejemplo de lenguaje** | C, Pascal, COBOL   | C#, Java, Python     | Haskell, Elixir, F#      |
+
+---
+
+## 🟩 Programación Orientada a Objetos (POO) - Profundizando
+
+> POO es un paradigma basado en el uso de "objetos" que encapsulan datos y comportamiento.
+
+- Se inspira en el mundo real: entidades que tienen **estado** (atributos) y **comportamiento** (métodos).
+- Facilita el modelado, la reutilización y el mantenimiento del software.
+
+---
+
+## 🔧 Principios Fundamentales de la POO
+
+| Principio      | Descripción |
+|----------------|-------------|
+| **Herencia**       | Una clase puede heredar atributos y métodos de otra. |
+| **Polimorfismo**   | Un mismo método puede comportarse diferente según el tipo de objeto. |
+| **Abstracción**    | Se modela solo lo relevante, ocultando detalles innecesarios. |
+| **Encapsulamiento** | Se restringe el acceso directo al estado del objeto, usando propiedades o métodos. |
+
+---
+
+## 🧬 Herencia – Ejemplo en C\#
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class Animal
+{
+    public void Eat() => Console.WriteLine("Eating...");
+}
+
+public class Dog : Animal
+{
+    public void Bark() => Console.WriteLine("Woof!");
+}
+```
+
+`Dog` hereda el método `Eat()` de `Animal`.
+
+---
+
+## 🎭 Polimorfismo – Ejemplo
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class Animal
+{
+    public virtual void Speak() => Console.WriteLine("Some sound");
+}
+
+public class Cat : Animal
+{
+    public override void Speak() => Console.WriteLine("Meow");
+}
+
+public class Dog : Animal
+{
+    public override void Speak() => Console.WriteLine("Woof");
+}
+```
+
+Un mismo método (`Speak`) tiene diferentes implementaciones.
+
+---
+
+## 🎨 Abstracción – Ejemplo
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public abstract class PaymentMethod
+{
+    public abstract void Pay(decimal amount);
+}
+```
+
+Solo se define lo necesario para el diseño. Cada subclase implementa `Pay` como corresponda.
+
+---
+
+## 🔒 Encapsulamiento – Ejemplo
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class Account
+{
+    private decimal balance;
+
+    public void Deposit(decimal amount)
+    {
+        if (amount > 0)
+            balance += amount;
+    }
+
+    public decimal GetBalance() => balance;
+}
+```
+
+El acceso al atributo `balance` está protegido.
+
+---
+
+## 🏗️ Características del paradigma orientado a objetos
+
+- **Clases abstractas:** permiten definir comportamiento base con métodos abstractos.
+- **Clases concretas:** contienen la lógica específica y pueden ser instanciadas.
+- **Interfaces:** definen contratos que deben cumplirse sin especificar implementación.
+- **Visibilidad:** (`public`, `private`, `protected`, `internal`) controla el acceso entre objetos.
+
+---
+
+## 🔗 ¿Cómo se relaciona esto con SOLID?
+
+- **SOLID** se apoya completamente en los principios de la POO.
+- Mejora cómo usamos **herencia, interfaces y abstracción** para mantener bajo acoplamiento.
+- Ayuda a diseñar sistemas más **seguros, sostenibles y mantenibles**.
+
+---
+
+## 🔥 ¿Qué es SOLID?
+
+> Un conjunto de principios que buscan mejorar la mantenibilidad, extensibilidad y calidad del software.
+
+- Introducido por Robert C. Martin (Uncle Bob).
+- Aplica principalmente a diseño orientado a objetos.
+- Ayuda a reducir "code smells" y errores de arquitectura.
+
+---
+
+## 🦨 Code Smells comunes
+
+- Rigidez: difícil de cambiar.
+- Fragilidad: cambios rompen muchas partes.
+- Inmovilidad: difícil de reutilizar.
+- Viscosidad: es más fácil hacer "hacks" que hacerlo bien.
+- Repetición innecesaria.
+- Complejidad innecesaria.
+- Opacidad: difícil de entender.
+
+---
+
+## 🦨 Code Smells en el diseño de software
+
+> Un *code smell* es una señal de que algo podría estar mal con el diseño o implementación de un sistema.
+
+No necesariamente son bugs, pero **aumentan el riesgo de errores y dificultan el mantenimiento**.
+
+---
+
+## 🧱 1. Rigidez
+
+> “Es difícil cambiar algo sin afectar muchas otras partes.”
+
+### Ejemplo:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class InvoiceProcessor
+{
+    public void ProcessInvoice()
+    {
+        // lógica de procesamiento
+        GeneratePDF(); // muy acoplado
+    }
+
+    private void GeneratePDF()
+    {
+        // lógica específica para PDF
+    }
+}
+```
+
+Cambiar la forma de exportar implicaría cambiar esta clase.
+
+---
+
+## 💥 2. Fragilidad
+
+> “Cambios pequeños rompen otras partes del sistema inesperadamente.”
+
+### Ejemplo:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class UIController
+{
+    public void ChangeTheme()
+    {
+        // Cambia colores... pero afecta impresión sin saberlo
+        ReportTable.Style = "dark";
+    }
+}
+```
+
+Cambiar un color rompe otras partes que reutilizan la misma tabla.
+
+---
+
+## ⚓ 3. Inmovilidad
+
+> “El código útil no se puede reutilizar fácilmente.”
+
+### Ejemplo:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class DataExporter
+{
+    public void ExportToCSV(List<User> users, string path)
+    {
+        // Contiene lógica para leer archivo de configuración, logs, etc.
+    }
+}
+```
+
+No se puede usar fácilmente en otro proyecto sin llevar dependencias innecesarias.
+
+---
+
+## 🩹 4. Viscosidad
+
+> “Es más fácil hacer un *hack* que seguir el diseño correcto.”
+
+### Ejemplo:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class OrderService
+{
+    public void CancelOrder(int id)
+    {
+        // Esto está bien...
+    }
+
+    public void EmergencyCancel(int id)
+    {
+        // Copia y pega todo el código anterior con ligeros cambios
+    }
+}
+```
+
+Un cambio urgente se hace mal, por presión o falta de claridad.
+
+---
+
+## 📋 5. Repetición innecesaria
+
+> “Copy-paste en vez de abstraer o reutilizar.”
+
+### Ejemplo:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class MathUtils
+{
+    public double CalcAreaCircle(double r) => Math.PI * r * r;
+    public double CalcAreaAnotherCircle(double r) => 3.1416 * r * r;
+}
+```
+
+Mismo cálculo, duplicado con diferencias innecesarias.
+
+---
+
+## 🌫️ 6. Opacidad
+
+> “El código es difícil de leer o entender.”
+
+### Ejemplo:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public void Z()
+{
+    var x = 42;
+    var y = x * 2;
+    var z = y - 1;
+    Console.WriteLine(z);
+}
+```
+
+Sin nombres significativos, no se sabe qué hace el método.
+
+---
+
+## 🕸️ 7. Complejidad innecesaria
+
+> “Diseño demasiado abstracto para un problema simple.”
+
+### Ejemplo:
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public abstract class AbstractDataLoader<T>
+{
+    public abstract void Load(T data);
+}
+
+public class CustomerDataLoader : AbstractDataLoader<Customer>
+{
+    public override void Load(Customer data)
+    {
+        Console.WriteLine("Loading customer...");
+    }
+}
+```
+
+Esto podría haber sido un simple método `Load(Customer)`. Demasiada abstracción para un caso trivial.
+
+---
+
+# 🏗️ SOLID
+
+---
+
+## 🎯 S – Single Responsibility Principle (SRP)
+
+> Una clase debe tener **una única razón para cambiar**.
+
+- Cada clase debería hacer **una sola cosa**.
+- Mejora la cohesión y facilita el mantenimiento.
+
+---
+
+### Ejemplo SRP – Incorrecto
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class ReportGenerator
+{
+    public void GenerateReport() { /* lógica */ }
+
+    public void ExportToPDF() { /* lógica de exportación */ }
+}
+```
+
+Aquí `ReportGenerator` tiene dos responsabilidades: generar datos y exportar.
+
+---
+
+### Ejemplo SRP – Correcto
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class ReportGenerator
+{
+    public string GenerateReport() => "Reporte generado";
+}
+
+public class PDFExporter
+{
+    public void Export(string content) { /* exportar a PDF */ }
+}
+```
+
+Ahora cada clase tiene una sola responsabilidad.
+
+---
+
+## 🔓 O – Open/Closed Principle (OCP)
+
+> **Abierto para extensión, cerrado para modificación.**
+
+- Podés extender una clase sin modificar su código original.
+- Comúnmente aplicado con interfaces y herencia.
+
+---
+
+### Ejemplo OCP – Violación
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class AreaCalculator
+{
+    public double CalculateArea(object shape)
+    {
+        if (shape is Circle c) return Math.PI * c.Radius * c.Radius;
+        if (shape is Square s) return s.Side * s.Side;
+        return 0;
+    }
+}
+```
+
+Agregar nuevas formas rompe el código existente.
+
+---
+
+### Ejemplo OCP – Aplicado
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public interface IShape
+{
+    double Area();
+}
+
+public class Circle : IShape
+{
+    public double Radius { get; set; }
+    public double Area() => Math.PI * Radius * Radius;
+}
+
+public class Square : IShape
+{
+    public double Side { get; set; }
+    public double Area() => Side * Side;
+}
+
+public class AreaCalculator
+{
+    public double TotalArea(IShape[] shapes) =>
+        shapes.Sum(s => s.Area());
+}
+```
+
+Se pueden agregar nuevas formas sin tocar `AreaCalculator`.
+
+---
+
+## 🔄 L – Liskov Substitution Principle (LSP)
+
+> Una subclase debe poder sustituir a su clase base sin alterar el comportamiento.
+
+- No romper expectativas de quien usa la clase base.
+- Subtipos deben comportarse como sus padres.
+
+---
+
+### Ejemplo LSP – Violación
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class Bird
+{
+    public virtual void Fly() => Console.WriteLine("Flying...");
+}
+
+public class Ostrich : Bird
+{
+    public override void Fly() =>
+        throw new NotImplementedException("I can't fly!");
+}
+```
+
+`Ostrich` hereda de `Bird`, pero rompe la expectativa de que puede volar.
+
+---
+
+### Ejemplo LSP – Correcto
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public abstract class Bird { }
+
+public interface IFlyingBird
+{
+    void Fly();
+}
+
+public class Sparrow : Bird, IFlyingBird
+{
+    public void Fly() => Console.WriteLine("Flying...");
+}
+
+public class Ostrich : Bird
+{
+    // No implementa IFlyingBird
+}
+```
+
+Solo los pájaros voladores implementan `IFlyingBird`.
+
+---
+
+## 🧩 I – Interface Segregation Principle (ISP)
+
+> Los clientes no deben depender de interfaces que no usan.
+
+- Mejor tener muchas interfaces pequeñas y específicas.
+- Reduce el acoplamiento innecesario.
+
+---
+
+### Ejemplo ISP – Violación
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public interface IWorker
+{
+    void Work();
+    void Eat();
+}
+
+public class Robot : IWorker
+{
+    public void Work() => Console.WriteLine("Working...");
+    public void Eat() => throw new NotImplementedException();
+}
+```
+
+`Robot` no debería implementar `Eat()`.
+
+---
+
+### Ejemplo ISP – Correcto
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public interface IWorkable
+{
+    void Work();
+}
+
+public interface IFeedable
+{
+    void Eat();
+}
+
+public class Human : IWorkable, IFeedable
+{
+    public void Work() => Console.WriteLine("Working...");
+    public void Eat() => Console.WriteLine("Eating...");
+}
+
+public class Robot : IWorkable
+{
+    public void Work() => Console.WriteLine("Working...");
+}
+```
+
+---
+
+## ⬆️ D – Dependency Inversion Principle (DIP)
+
+> Depender de **abstracciones**, no de implementaciones concretas.
+
+- Las clases de alto nivel no deben depender de clases de bajo nivel.
+- Usar inyección de dependencias.
+
+---
+
+### Ejemplo DIP – Violación
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public class EmailService
+{
+    public void Send(string message) => Console.WriteLine($"Email: {message}");
+}
+
+public class Notifier
+{
+    private EmailService _email = new EmailService();
+    public void Notify(string message) => _email.Send(message);
+}
+```
+
+---
+
+### Ejemplo DIP – Aplicado
+
+<!-- language: csharp -->
+``` {.csharp .code-line-numbers}
+public interface IMessageService
+{
+    void Send(string message);
+}
+
+public class EmailService : IMessageService
+{
+    public void Send(string message) => Console.WriteLine($"Email: {message}");
+}
+
+public class Notifier
+{
+    private IMessageService _service;
+
+    public Notifier(IMessageService service)
+    {
+        _service = service;
+    }
+
+    public void Notify(string message) => _service.Send(message);
+}
+```
+
+---
+
+## 🎉 Conclusiones
+
+- SOLID es una guía práctica para diseñar sistemas **flexibles y mantenibles**.
+- Cada principio ataca uno o más "code smells".
+- Aplicar SOLID mejora la arquitectura, incluso en proyectos pequeños.
+- ¡Recordá: un buen diseño **huele bien**!
+
+---
+
+## 📝 Actividad
+
+- Revisar el código de su proyecto.
+- Identificar una clase que viole uno de los principios SOLID.
+- Refactorizar y explicar qué principio aplicaste y por qué.
+
+---
+
+## 🚀 Próxima clase
+- Vamos a ver estilos arquitectónicos y vamos a necesitar docker para simular cada estilo. Por favor, instalar docker para la próxima clase.

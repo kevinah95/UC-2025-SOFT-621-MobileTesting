@@ -1,0 +1,662 @@
+---
+title:   "Diseño de Ingeniería"
+subtitle: "Diseño de Arquitectura"
+format:
+  kotlin-quarto-revealjs-theme-revealjs:
+    incremental: true
+    footer: "Universidad CENFOTEC ©"
+    logo: imgs/logo.png
+author:
+    - name: Kevin A. Hernández Rostrán
+      degrees:
+        - M.Sc.
+      orcid: 0009-0001-7682-0350
+      email: khernandez@ucenfotec.ac.cr
+      affiliation:
+        - name: Universidad Cenfotec
+          url: https://ucenfotec.ac.cr/
+---
+
+## 💭 Introducción
+
+> *"En un mundo donde la escala y la confiabilidad son requisitos, no características opcionales, los patrones arquitectónicos se convierten en el lenguaje común que permite a los equipos construir sistemas verdaderamente resilientes."*
+
+**— Kevin Hoffman, Patterns of Scalable, Reliable Services**
+
+---
+
+## Patrones PoSA
+### Arquitectura de Software Orientada a Patrones
+
+Los patrones PoSA ofrecen soluciones reutilizables y probadas para diseñar sistemas de software **escalables, modulares y adaptables**.
+
+Basado en:
+📘 *Patterns of Scalable, Reliable Services*
+👨‍💻 Autor: Kevin Hoffman
+
+---
+
+## Categorías de Patrones PoSA
+
+Los patrones se agrupan en 4 categorías principales:
+
+1. **Partitioning Patterns** – Dividir el sistema en partes manejables
+2. **Placement Patterns** – Dónde desplegar o ubicar componentes
+3. **Routing Patterns** – Cómo enrutar solicitudes y mensajes
+4. **Federation Patterns** – Cómo colaborar entre múltiples instancias o dominios
+
+---
+
+## Partitioning Patterns
+### Divide y vencerás
+
+Estos patrones ayudan a dividir el sistema en **partes independientes** para mejorar el escalamiento, el mantenimiento y la resiliencia.
+
+---
+
+## 🎯 Contexto: Partitioning Patterns
+
+### ¿Cuándo usar?
+- Sistemas **monolíticos** que necesitan escalar
+- Equipos **grandes** que necesitan trabajar independientemente
+- Diferentes **cargas de trabajo** con requisitos distintos
+
+### ✅ Beneficios:
+- **Escalabilidad independiente** - cada parte se escala según su demanda
+- **Desarrollo paralelo** - equipos pueden trabajar sin interferir
+- **Tolerancia a fallos** - falla una parte, el resto sigue funcionando
+- **Tecnologías especializadas** - cada parte usa la tecnología más apropiada
+
+---
+
+## 🎯 Contexto: Partitioning Patterns
+
+### ⚠️ Desafíos:
+- **Complejidad de red** - más comunicación entre servicios
+- **Gestión de datos** - consistencia entre particiones
+- **Monitoreo distribuido** - visibilidad del sistema completo
+
+---
+
+### Patrón: Functional Decomposition
+
+Divide un sistema por **dominios funcionales**.
+Ejemplo: usuarios, pagos, pedidos.
+
+```{.yml .code-block}
+## docker-compose.yaml
+version: "3.8"
+services:
+  usuarios:
+    image: miapp/usuarios
+    ports:
+      - "8081:80"
+  pagos:
+    image: miapp/pagos
+    ports:
+      - "8082:80"
+  pedidos:
+    image: miapp/pedidos
+    ports:
+      - "8083:80"
+```
+
+➡️ Cada servicio se puede desarrollar, desplegar y escalar por separado.
+
+---
+
+### Patrón: Data Partitioning (Sharding)
+
+Divide los datos entre múltiples instancias.
+
+```{.yml .code-block}
+## docker-compose.yaml simulando sharding
+version: "3.8"
+services:
+  db-shard-1:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - SHARD_ID=shard1
+
+  db-shard-2:
+    image: mongo
+    ports:
+      - "27018:27017"
+    environment:
+      - SHARD_ID=shard2
+```
+
+📌 Cada contenedor actúa como una partición de datos.
+
+---
+
+## Placement Patterns
+### ¿Dónde ubicar componentes?
+
+Estos patrones definen **dónde ejecutar cada componente**, según cercanía o capacidad del entorno.
+
+---
+
+## 🎯 Contexto: Placement Patterns
+
+### ¿Cuándo usar?
+- **Latencia** es crítica para la experiencia del usuario
+- Recursos **limitados** que deben optimizarse
+- **Regulaciones** requieren datos en ubicaciones específicas
+- **Costos** de infraestructura deben minimizarse
+
+### ✅ Beneficios:
+- **Menor latencia** - servicios cerca del usuario final
+- **Optimización de recursos** - usar la capacidad disponible eficientemente
+- **Cumplimiento regulatorio** - datos en jurisdicciones correctas
+- **Reducción de costos** - usar recursos más baratos cuando sea posible
+
+---
+
+## 🎯 Contexto: Placement Patterns
+
+### ⚠️ Desafíos:
+- **Gestión compleja** - múltiples ubicaciones para administrar
+- **Sincronización** - mantener consistencia entre ubicaciones
+- **Failover** - qué hacer cuando una ubicación falla
+
+---
+
+### Patrón: Locality-Aware Placement
+
+Ubica los servicios **cerca del consumidor final**.
+
+```{.yml .code-block}
+## docker-compose con redes separadas
+networks:
+  zona_eu:
+  zona_us:
+
+services:
+  servicio-eu:
+    image: miapp/app
+    networks:
+      - zona_eu
+
+  servicio-us:
+    image: miapp/app
+    networks:
+      - zona_us
+```
+
+🌍 Esto permite simular regiones o zonas geográficas locales.
+
+---
+
+### Patrón: Resource-Aware Placement
+
+Ejecuta servicios según requisitos de recursos.
+
+```{.yml .code-block}
+## Ejecutar con límites de recursos
+docker run -d   --memory="512m"   --cpus="0.5"   --name servicio-ligero   miapp/app
+```
+
+⚖️ Este patrón optimiza el uso de recursos disponibles en el host.
+
+---
+
+## Routing Patterns
+### ¿Cómo se enrutan las solicitudes?
+
+Estos patrones definen **cómo dirigir el tráfico** hacia los servicios apropiados.
+
+---
+
+## 🎯 Contexto: Routing Patterns
+
+### ¿Cuándo usar?
+- **Múltiples versiones** del mismo servicio en producción
+- **Balanceador de carga** necesario para distribuir tráfico
+- **A/B testing** o **canary deployments** requeridos
+- **Servicios especializados** según tipo de solicitud
+
+### ✅ Beneficios:
+- **Flexibilidad de despliegue** - dirigir tráfico según necesidades
+- **Zero-downtime deployments** - cambiar versiones sin interrupciones
+- **Testing en producción** - probar nuevas funcionalidades gradualmente
+- **Optimización de rendimiento** - enrutar según capacidad o latencia
+
+---
+
+## 🎯 Contexto: Routing Patterns
+
+### ⚠️ Desafíos:
+- **Punto de falla único** - el router puede ser crítico
+- **Configuración compleja** - reglas de enrutamiento pueden ser complicadas
+- **Observabilidad** - rastrear flujo de solicitudes entre servicios
+
+---
+
+### Patrón: Client-Side Routing
+
+El cliente decide a qué endpoint conectarse.
+
+```{.yml .code-block}
+## JavaScript (cliente)
+const region = detectUserRegion();
+const url = region === 'EU'
+  ? 'http://localhost:8081'
+  : 'http://localhost:8082';
+
+fetch(url + '/status');
+```
+
+📍 Útil para enrutar según región u origen de usuario.
+
+---
+
+### Patrón: Reverse Proxy Routing
+
+Un proxy enruta el tráfico según el path o encabezados.
+
+```{.yml .code-block}
+## docker-compose con Nginx como reverse proxy
+version: "3.8"
+services:
+  proxy:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+
+  pagos:
+    image: miapp/pagos
+    ports:
+      - "8082:80"
+
+  usuarios:
+    image: miapp/usuarios
+    ports:
+      - "8081:80"
+```
+
+📬 Nginx actúa como punto central de enrutamiento.
+
+---
+
+## Federation Patterns
+### Colaboración entre dominios o clusters
+
+Permiten que múltiples sistemas trabajen en conjunto sin perder autonomía.
+
+---
+
+## 🎯 Contexto: Federation Patterns
+
+### ¿Cuándo usar?
+- **Múltiples organizaciones** necesitan colaborar
+- **Sistemas legacy** deben integrarse con modernos
+- **Microservicios** necesitan compartir funcionalidades comunes
+- **Multi-cloud** o **híbrido** deployments
+
+### ✅ Beneficios:
+- **Autonomía preservada** - cada dominio mantiene independencia
+- **Reutilización** - servicios compartidos entre dominios
+- **Interoperabilidad** - sistemas diferentes pueden colaborar
+- **Gobernanza distribuida** - cada equipo controla su dominio
+
+---
+
+## 🎯 Contexto: Federation Patterns
+
+### ⚠️ Desafíos:
+- **Contratos de API** - mantener compatibilidad entre dominios
+- **Seguridad compleja** - autenticación y autorización cross-domain
+- **Debugging distribuido** - problemas pueden cruzar múltiples dominios
+- **Versionado** - coordinar cambios entre múltiples equipos
+
+---
+
+### Patrón: Service Federation
+
+Simula consumir servicios externos desde otro entorno o red.
+
+```{.yml .code-block}
+## docker-compose con ExternalName simulado usando proxy
+version: "3.8"
+services:
+  proxy:
+    image: nginx
+    volumes:
+      - ./nginx-externo.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
+
+  servicio-local:
+    image: miapp/local
+    ports:
+      - "8085:80"
+```
+
+🔗 El proxy actúa como puente a servicios federados externos.
+
+---
+
+### Patrón: Shared Identity
+
+Múltiples servicios usan el mismo proveedor de identidad.
+
+```{.yml .code-block}
+## docker-compose con servicio que consume OIDC
+version: "3.8"
+services:
+  servicio:
+    image: miapp/secure-app
+    environment:
+      - OIDC_ISSUER=https://login.empresa.com
+```
+
+🔐 Asegura una identidad común entre servicios distribuidos.
+
+---
+
+## Conclusión
+
+✅ Los patrones PoSA ayudan a construir sistemas **modulares, escalables y mantenibles**.
+
+🐳 Usando **Docker**, podemos implementar fácilmente estos patrones en entornos modernos.
+
+📚 Más info: *Patterns of Scalable, Reliable Services* — Kevin Hoffman
+
+---
+
+## 🛠️ Práctica: Implementando Patrones PoSA
+
+### Objetivo
+Implementar **Functional Decomposition** y **Reverse Proxy Routing** para un sistema de e-commerce básico.
+
+---
+
+## 📋 Requisitos Previos
+
+- ✅ Docker y Docker Compose instalados
+- ✅ Editor de texto (VS Code, Sublime, etc.)
+- ✅ Navegador web
+- ✅ Terminal/PowerShell
+
+**Verificar instalación:**
+```bash
+docker --version
+docker-compose --version
+```
+
+---
+
+## 🎯 Escenario: MiTienda Online
+
+Vamos a crear un sistema de e-commerce con 3 microservicios:
+
+1. **🛒 Servicio de Productos** - Puerto 8001
+2. **👤 Servicio de Usuarios** - Puerto 8002
+3. **💳 Servicio de Pagos** - Puerto 8003
+4. **🚪 Gateway (Nginx)** - Puerto 80
+
+**Patrón aplicado:** Functional Decomposition + Reverse Proxy Routing
+
+---
+
+## 📝 Paso 1: Estructura del Proyecto
+
+Crear la siguiente estructura de carpetas:
+
+```
+mitienda/
+├── docker-compose.yml
+├── nginx/
+│   └── nginx.conf
+├── productos/
+│   ├── Dockerfile
+│   └── app.py
+├── usuarios/
+│   ├── Dockerfile
+│   └── app.py
+└── pagos/
+    ├── Dockerfile
+    └── app.py
+```
+
+---
+
+## 🐍 Paso 2: Servicio de Productos
+
+**Archivo:** `productos/app.py`
+```python
+from flask import Flask, jsonify
+app = Flask(__name__)
+
+@app.route('/productos')
+def get_productos():
+    return jsonify({
+        "servicio": "productos",
+        "productos": [
+            {"id": 1, "nombre": "Laptop", "precio": 1200},
+            {"id": 2, "nombre": "Mouse", "precio": 25}
+        ]
+    })
+
+@app.route('/health')
+def health():
+    return jsonify({"status": "OK", "servicio": "productos"})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+```
+
+---
+
+## 🐍 Paso 2: Dockerfile para Productos
+
+**Archivo:** `productos/Dockerfile`
+```dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+RUN pip install flask
+COPY app.py .
+EXPOSE 80
+CMD ["python", "app.py"]
+```
+
+**Repite este proceso para `usuarios` y `pagos`** cambiando:
+- Usuarios: endpoint `/usuarios`, datos de usuarios
+- Pagos: endpoint `/pagos`, datos de transacciones
+
+---
+
+## 🌐 Paso 3: Configurar Nginx
+
+**Archivo:** `nginx/nginx.conf`
+```nginx
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream productos {
+        server productos:80;
+    }
+
+    upstream usuarios {
+        server usuarios:80;
+    }
+
+    upstream pagos {
+        server pagos:80;
+    }
+
+    server {
+        listen 80;
+
+        location /api/productos {
+            proxy_pass http://productos/productos;
+        }
+
+        location /api/usuarios {
+            proxy_pass http://usuarios/usuarios;
+        }
+
+        location /api/pagos {
+            proxy_pass http://pagos/pagos;
+        }
+
+        location /health {
+            return 200 "Gateway OK";
+        }
+    }
+}
+```
+
+---
+
+## 🐳 Paso 4: Docker Compose
+
+**Archivo:** `docker-compose.yml`
+```yaml
+version: '3.8'
+services:
+  productos:
+    build: ./productos
+    container_name: productos-service
+    networks:
+      - tienda-network
+
+  usuarios:
+    build: ./usuarios
+    container_name: usuarios-service
+    networks:
+      - tienda-network
+
+  pagos:
+    build: ./pagos
+    container_name: pagos-service
+    networks:
+      - tienda-network
+
+  gateway:
+    image: nginx
+    container_name: api-gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - productos
+      - usuarios
+      - pagos
+    networks:
+      - tienda-network
+
+networks:
+  tienda-network:
+    driver: bridge
+```
+
+---
+
+## 🚀 Paso 5: Ejecutar la Práctica
+
+1. **Navegar al directorio:**
+   ```bash
+   cd mitienda
+   ```
+
+2. **Construir y ejecutar:**
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Probar los endpoints:**
+   ```bash
+   curl http://localhost/api/productos
+   curl http://localhost/api/usuarios
+   curl http://localhost/api/pagos
+   ```
+
+---
+
+## 🔍 Paso 6: Verificación
+
+### Endpoints esperados:
+- `http://localhost/api/productos` → Lista de productos
+- `http://localhost/api/usuarios` → Lista de usuarios
+- `http://localhost/api/pagos` → Lista de transacciones
+- `http://localhost/health` → Estado del gateway
+
+### Verificar contenedores:
+```bash
+docker-compose ps
+docker-compose logs productos
+```
+
+---
+
+## 🎓 Preguntas de Reflexión
+
+1. **¿Qué patrón PoSA implementamos?**
+   - Functional Decomposition (servicios por dominio)
+   - Reverse Proxy Routing (enrutamiento centralizado)
+
+2. **¿Qué beneficios observas?**
+   - Cada servicio es independiente
+   - Se puede escalar por separado
+   - Un punto de entrada unificado
+
+3. **¿Qué desafíos identificas?**
+   - Configuración de red
+   - Debugging distribuido
+   - Gestión de dependencias
+
+---
+
+## 🏆 Desafío Extra (Opcional)
+
+### Implementar Resource-Aware Placement:
+
+```yaml
+# En docker-compose.yml, agregar límites
+productos:
+  build: ./productos
+  deploy:
+    resources:
+      limits:
+        cpus: '0.5'
+        memory: 256M
+```
+
+### Simular Locality-Aware Placement:
+
+```yaml
+# Crear redes separadas para simular regiones
+networks:
+  region-us:
+  region-eu:
+```
+
+---
+
+## 📊 Entregables
+
+1. **Captura de pantalla** de los endpoints funcionando
+2. **Archivo docker-compose.yml** completo
+3. **Respuestas** a las preguntas de reflexión
+4. **(Opcional)** Implementación del desafío extra
+
+**Tiempo estimado:** 45-60 minutos
+
+---
+
+## 💡 Extensiones Futuras
+
+- Agregar base de datos (PostgreSQL/MongoDB)
+- Implementar Service Discovery
+- Agregar monitoreo con Prometheus
+- Implementar circuit breakers
+- Usar Kubernetes en lugar de Docker Compose

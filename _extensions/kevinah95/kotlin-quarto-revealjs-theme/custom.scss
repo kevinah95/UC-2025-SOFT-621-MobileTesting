@@ -20,10 +20,10 @@ $presentation-font-size-root: 40px !default;
 // Headings
 $presentation-heading-font: $quarto-font-heading;
 $presentation-heading-font-weight: normal;
-$headingMargin: 0 0 70px 0;
+$headingMargin: 0 0 30px 0;
 
 // margins
-$presentation-block-margin: 12px !default;
+$presentation-block-margin: 8px !default;
 
 // --- derive reveal versions of presentation variables for finer-grained override ---
 
@@ -34,6 +34,10 @@ $blockMargin: $revealjs-block-margin !default;
 
 // Code blocks
 $font-family-monospace: $quarto-font-monospace;
+
+// Code snippet font size
+$code-font-size: 24px !default;
+$code-block-font-size: 16px !default;
 
 /*-- scss:rules --*/
 
@@ -75,4 +79,96 @@ a {
   p {
     font-size: 20px;
   }
+}
+
+// Code snippets
+.reveal code {
+    font-size: $code-font-size;
+    font-family: $font-family-monospace;
+}
+
+.reveal pre code {
+    font-size: $code-block-font-size;
+    font-family: $font-family-monospace;
+}
+
+// Inline code
+.reveal p code,
+.reveal li code {
+    font-size: $code-font-size;
+    font-family: $font-family-monospace;
+}
+
+// Tables - compact styling
+.reveal table {
+    font-size: 20px;
+    line-height: 1.2;
+    margin: 15px auto;
+    border-collapse: collapse;
+}
+
+.reveal table th,
+.reveal table td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    vertical-align: top;
+}
+
+.reveal table th {
+    font-weight: bold;
+    background-color: #f5f5f5;
+    font-size: 18px;
+}
+
+.reveal table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+// Reduce spacing between elements
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+    margin: 0 0 20px 0;
+    line-height: 1.1;
+}
+
+.reveal p {
+    margin: 0 0 15px 0;
+}
+
+.reveal ul, .reveal ol {
+    margin: 0 0 15px 0;
+}
+
+.reveal li {
+    margin-bottom: 8px;
+}
+
+// Code blocks spacing
+.reveal pre {
+    margin: 15px 0;
+    box-shadow: none;
+}
+
+.reveal .code-with-copy {
+    margin: 15px 0;
+}
+
+// Blockquotes
+.reveal blockquote {
+    margin: 15px 0;
+    padding: 10px 20px;
+}
+
+// Figures and images
+.reveal figure {
+    margin: 15px 0;
+}
+
+// Section spacing
+.reveal .slides section {
+    padding: 20px 40px;
+}
+
+// Reduce space around slide content
+.reveal .slides section .slide-content {
+    margin-top: 0;
 }

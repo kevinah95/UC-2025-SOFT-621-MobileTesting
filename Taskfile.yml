@@ -18,3 +18,9 @@ tasks:
   l05:
     cmds:
       - quarto preview lessons/L05.qmd --output-dir output
+  l10:
+    cmds:
+      - quarto preview lessons/L10.qmd --output-dir output
+  l11:
+    cmds:
+      - quarto preview lessons/L11.qmd --output-dir output
