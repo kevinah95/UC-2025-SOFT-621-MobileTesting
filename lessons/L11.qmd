@@ -50,8 +50,8 @@ author:
 ## 📚 ¿Qué son los Patrones de Diseño?
 
 ### 📖 Dos categorías principales:
-1. **Patrones de Diseño (GoF)** - Nivel de código/clases
-2. **Patrones Arquitectónicos (PoSA)** - Nivel de sistema/aplicación
+  1. **Patrones de Diseño (GoF)** - Nivel de código/clases
+  2. **Patrones Arquitectónicos (PoSA)** - Nivel de sistema/aplicación
 
 ---
 
@@ -985,34 +985,44 @@ CMD ["python", "app.py"]
 **Archivo:** `nginx/nginx.conf`
 ```nginx
 events {
-    worker_connections 1024;
+  worker_connections 1024;
 }
 
 http {
-    upstream productos {
-        server productos:80;
+  upstream productos {
+    server productos:80;
+  }
+  upstream usuarios {
+    server usuarios:80;
+  }
+  upstream pagos {
+    server pagos:80;
+  }
+
+  # ... continúa en el siguiente slide
+```
+
+---
+
+## 🌐 Paso 3: Configurar Nginx (continuación)
+
+```nginx
+  # ... continuación del bloque http
+  server {
+    listen 80;
+    location /api/productos {
+      proxy_pass http://productos/productos;
     }
-    upstream usuarios {
-        server usuarios:80;
+    location /api/usuarios {
+      proxy_pass http://usuarios/usuarios;
     }
-    upstream pagos {
-        server pagos:80;
+    location /api/pagos {
+      proxy_pass http://pagos/pagos;
     }
-    server {
-        listen 80;
-        location /api/productos {
-            proxy_pass http://productos/productos;
-        }
-        location /api/usuarios {
-            proxy_pass http://usuarios/usuarios;
-        }
-        location /api/pagos {
-            proxy_pass http://pagos/pagos;
-        }
-        location /health {
-            return 200 "Gateway OK";
-        }
+    location /health {
+      return 200 "Gateway OK";
     }
+  }
 }
 ```
 
@@ -1039,6 +1049,16 @@ services:
     container_name: pagos-service
     networks:
       - tienda-network
+
+# ... continúa en el siguiente slide
+```
+
+---
+
+## 🐳 Paso 4: Docker Compose (continuación)
+
+```yaml
+# ... continuación de docker-compose.yml
   gateway:
     image: nginx
     container_name: api-gateway

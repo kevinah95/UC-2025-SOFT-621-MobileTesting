@@ -23,12 +23,12 @@ $presentation-heading-font-weight: normal;
 $headingMargin: 0 0 30px 0;
 
 // Header font sizes
-$presentation-h1-font-size: 1.6em !default;
-$presentation-h2-font-size: 1.3em !default;
-$presentation-h3-font-size: 1.1em !default;
-$presentation-h4-font-size: 1em !default;
-$presentation-h5-font-size: 0.9em !default;
-$presentation-h6-font-size: 0.8em !default;
+$presentation-h1-font-size: 1.5em !default;
+$presentation-h2-font-size: 1.2em !default;
+$presentation-h3-font-size: 1.0em !default;
+$presentation-h4-font-size: 0.9em !default;
+$presentation-h5-font-size: 0.8em !default;
+$presentation-h6-font-size: 0.7em !default;
 
 // margins
 $presentation-block-margin: 8px !default;
@@ -140,27 +140,27 @@ a {
 
 // Specific header font sizes
 .reveal h1 {
-    font-size: 1.6em;
+    font-size: 1.5em;
 }
 
 .reveal h2 {
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 
 .reveal h3 {
-    font-size: 1.1em;
+    font-size: 1.0em;
 }
 
 .reveal h4 {
-    font-size: 1em;
-}
-
-.reveal h5 {
     font-size: 0.9em;
 }
 
-.reveal h6 {
+.reveal h5 {
     font-size: 0.8em;
+}
+
+.reveal h6 {
+    font-size: 0.7em;
 }
 
 .reveal p {
