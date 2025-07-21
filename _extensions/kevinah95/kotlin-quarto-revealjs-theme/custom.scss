@@ -44,8 +44,8 @@ $blockMargin: $revealjs-block-margin !default;
 $font-family-monospace: $quarto-font-monospace;
 
 // Code snippet font size
-$code-font-size: 24px !default;
-$code-block-font-size: 16px !default;
+$code-font-size: 22px !default;
+$code-block-font-size: 15px !default;
 
 /*-- scss:rules --*/
 
@@ -63,20 +63,20 @@ a {
 // Unordered lists
 
 .reveal ul {
-    font-size: 28px;
-    padding-left: .5em;
+  font-size: 28px;
+  padding-left: .5em;
 }
 
 .reveal ul li {
-    padding-left: 1em;
+  padding-left: 1em;
 }
 
 // Figures
 .reveal figure {
-    > figcaption{
-        font-size: .5em !important;
-        text-align: center;
-    }
+  > figcaption{
+    font-size: .5em !important;
+    text-align: center;
+  }
 }
 
 .reveal .slide-logo {
@@ -109,33 +109,33 @@ a {
 
 // Tables - compact styling
 .reveal table {
-    font-size: 20px;
-    line-height: 1.2;
-    margin: 15px auto;
-    border-collapse: collapse;
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 15px auto;
+  border-collapse: collapse;
 }
 
 .reveal table th,
 .reveal table td {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    vertical-align: top;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  vertical-align: top;
 }
 
 .reveal table th {
-    font-weight: bold;
-    background-color: #f5f5f5;
-    font-size: 18px;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  font-size: 18px;
 }
 
 .reveal table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }
 
 // Reduce spacing between elements
 .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
-    margin: 0 0 20px 0;
-    line-height: 1.1;
+  margin: 0 0 20px 0;
+  line-height: 1.1;
 }
 
 // Specific header font sizes

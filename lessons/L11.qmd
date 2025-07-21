@@ -28,7 +28,7 @@ author:
 ## 🎯 Objetivos de la sesión
 
 - Comprender los **patrones de diseño GoF** y sus categorías
-- Implementar patrones **Creacionales, Estructurales y Comportamentales**
+- Implementar patrones **Creacionales, Estructurales y De Comportamiento**
 - Conocer los **patrones arquitectónicos PoSA**
 - Aplicar patrones usando **Docker** en proyectos reales
 - Identificar **cuándo y cómo** usar cada patrón
@@ -78,7 +78,7 @@ Los patrones GoF se dividen en **3 categorías principales**:
 |-----------|-----------|---------|
 | **🏗️ Creacionales** | **Cómo** crear objetos | Creación de instancias |
 | **🔗 Estructurales** | **Cómo** componer objetos | Composición de clases/objetos |
-| **🎭 Comportamentales** | **Cómo** interactúan objetos | Comunicación entre objetos |
+| **🎭 De Comportamiento** | **Cómo** interactúan objetos | Comunicación entre objetos |
 
 ---
 
@@ -111,36 +111,36 @@ Los patrones GoF se dividen en **3 categorías principales**:
 ```csharp
 public sealed class ConfigManager
 {
-    private static ConfigManager _instance = null;
-    private static readonly object _lock = new object();
-    private Dictionary<string, string> _config;
+  private static ConfigManager _instance = null;
+  private static readonly object _lock = new object();
+  private Dictionary<string, string> _config;
 
-    private ConfigManager()
+  private ConfigManager()
+  {
+    _config = new Dictionary<string, string>
     {
-        _config = new Dictionary<string, string>
-        {
-            {"DatabaseUrl", "localhost:5432"},
-            {"ApiKey", "abc123"}
-        };
-    }
+      {"DatabaseUrl", "localhost:5432"},
+      {"ApiKey", "abc123"}
+    };
+  }
 
-    public static ConfigManager Instance
+  public static ConfigManager Instance
+  {
+    get
     {
-        get
+      if (_instance == null)
+      {
+        lock (_lock)
         {
-            if (_instance == null)
-            {
-                lock (_lock)
-                {
-                    if (_instance == null)
-                        _instance = new ConfigManager();
-                }
-            }
-            return _instance;
+          if (_instance == null)
+            _instance = new ConfigManager();
         }
+      }
+      return _instance;
     }
+  }
 
-    public string GetConfig(string key) => _config.GetValueOrDefault(key);
+  public string GetConfig(string key) => _config.GetValueOrDefault(key);
 }
 ```
 
@@ -164,32 +164,32 @@ string dbUrl = config.GetConfig("DatabaseUrl");
 // Producto abstracto
 public abstract class Notification
 {
-    public abstract void Send(string message);
+  public abstract void Send(string message);
 }
 
 // Productos concretos
 public class EmailNotification : Notification
 {
-    public override void Send(string message)
-        => Console.WriteLine($"📧 Email: {message}");
+  public override void Send(string message)
+    => Console.WriteLine($"📧 Email: {message}");
 }
 
 public class SMSNotification : Notification
 {
-    public override void Send(string message)
-        => Console.WriteLine($"📱 SMS: {message}");
+  public override void Send(string message)
+    => Console.WriteLine($"📱 SMS: {message}");
 }
 
 // Factory
 public abstract class NotificationFactory
 {
-    public abstract Notification CreateNotification();
+  public abstract Notification CreateNotification();
 }
 
 public class EmailFactory : NotificationFactory
 {
-    public override Notification CreateNotification()
-        => new EmailNotification();
+  public override Notification CreateNotification()
+    => new EmailNotification();
 }
 
 // Uso
@@ -341,7 +341,7 @@ Console.WriteLine($"{coffee.GetDescription()}: ${coffee.GetCost()}");
 
 ---
 
-## 🎭 Patrones Comportamentales
+## 🎭 Patrones De Comportamiento
 
 ### Objetivo: **Comunicación y responsabilidades** entre objetos
 
@@ -351,7 +351,7 @@ Console.WriteLine($"{coffee.GetDescription()}: ${coffee.GetCost()}");
 
 ---
 
-## 🎭 Patrones Comportamentales - Lista
+## 🎭 Patrones De Comportamiento - Lista
 
 | Patrón | Propósito |
 |--------|-----------|
@@ -1000,6 +1000,10 @@ public class Books : Product
 }
 ```
 
+---
+
+## 🏗️ Paso 2: Servicio de Productos (Factory + Strategy)
+
 **Archivo:** `productos/Factories/ProductFactory.cs`
 ```csharp
 // Factory Method Pattern
@@ -1149,7 +1153,7 @@ app.Run();
 
 ---
 
-## � Paso 4: Verificación de Patrones
+## 🐳 Paso 4: Verificación de Patrones
 
 ### Probar Factory Method:
 ```bash
@@ -1182,6 +1186,10 @@ curl -X POST http://localhost:8001/productos/1/aplicar-descuento \
 2. **¿Por qué Strategy es útil para descuentos?**
    - Permite cambiar algoritmos de descuento dinámicamente
    - Facilita agregar nuevos tipos de descuento
+
+---
+
+## 🎓 Preguntas de Reflexión Avanzadas
 
 ### **Patrones PoSA:**
 3. **¿Qué ventajas da Functional Decomposition?**
@@ -1245,7 +1253,9 @@ public class UserService
 
 **Tiempo estimado:** 90-120 minutos
 
----## 📝 Paso 1: Estructura del Proyecto
+---
+
+## 📝 Paso 1: Estructura del Proyecto
 
 Crear la siguiente estructura de carpetas:
 
