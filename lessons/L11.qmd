@@ -1,6 +1,6 @@
 ---
-title:   "Diseño de Ingeniería"
-subtitle: "Diseño de Arquitectura"
+title:   "Diseño de Arquitectura"
+subtitle: "Patrones de diseño"
 format:
   kotlin-quarto-revealjs-theme-revealjs:
     incremental: true
@@ -18,6 +18,536 @@ author:
 ---
 
 ## 💭 Introducción
+
+> *"Cada patrón describe un problema que ocurre una y otra vez en nuestro entorno, y luego describe el núcleo de la solución a ese problema, de tal manera que puedes usar esta solución un millón de veces sin hacerlo de la misma forma dos veces."*
+
+**— Christopher Alexander, Arquitecto**
+
+---
+
+## 🎯 Objetivos de la sesión
+
+- Comprender los **patrones de diseño GoF** y sus categorías
+- Implementar patrones **Creacionales, Estructurales y Comportamentales**
+- Conocer los **patrones arquitectónicos PoSA**
+- Aplicar patrones usando **Docker** en proyectos reales
+- Identificar **cuándo y cómo** usar cada patrón
+
+---
+
+## 📚 ¿Qué son los Patrones de Diseño?
+
+> Los **patrones de diseño** son soluciones reutilizables a problemas comunes en el diseño de software.
+
+### ✅ Beneficios:
+- **Reutilización** - Soluciones probadas y documentadas
+- **Comunicación** - Vocabulario común entre desarrolladores
+- **Mantenibilidad** - Código más estructurado y comprensible
+- **Escalabilidad** - Arquitecturas más flexibles
+
+### 📖 Dos categorías principales:
+1. **Patrones de Diseño (GoF)** - Nivel de código/clases
+2. **Patrones Arquitectónicos (PoSA)** - Nivel de sistema/aplicación
+
+---
+
+# 🎩 Patrones GoF
+## Gang of Four Design Patterns
+
+---
+
+## 📖 Contexto: Patrones GoF
+
+**The Gang of Four (GoF)** son un conjunto de patrones de diseño para desarrollo de software orientado a objetos, descritos por primera vez en el libro *"Design Patterns: Elements of Reusable Object-Oriented Software"*.
+
+**Autores:** Erich Gamma, Richard Helm, Ralph Johnson, y John Vlissides
+
+**Año:** 1994 - ¡Casi 30 años y siguen siendo relevantes!
+
+---
+
+## 🗂️ Categorías de Patrones GoF
+
+Los patrones GoF se dividen en **3 categorías principales**:
+
+| Categoría | Propósito | Enfoque |
+|-----------|-----------|---------|
+| **🏗️ Creacionales** | **Cómo** crear objetos | Creación de instancias |
+| **🔗 Estructurales** | **Cómo** componer objetos | Composición de clases/objetos |
+| **🎭 Comportamentales** | **Cómo** interactúan objetos | Comunicación entre objetos |
+
+---
+
+## 🏗️ Patrones Creacionales
+
+### Objetivo: Controlar la **creación de objetos**
+
+**Problema:** Crear objetos directamente puede crear dependencias y rigidez.
+
+**Solución:** Abstraer el proceso de creación de objetos.
+
+---
+
+## 🏗️ Patrones Creacionales - Lista
+
+| Patrón | Propósito |
+|--------|-----------|
+| **Singleton** | Una sola instancia en toda la aplicación |
+| **Factory Method** | Crear objetos sin especificar clase exacta |
+| **Abstract Factory** | Crear familias de objetos relacionados |
+| **Builder** | Construir objetos complejos paso a paso |
+| **Prototype** | Crear objetos clonando instancias existentes |
+
+---
+
+### 🎯 Ejemplo: Singleton Pattern
+
+**Problema:** Necesito una sola instancia de configuración en toda la app.
+
+**Archivo:** `ConfigManager.cs`
+```csharp
+public sealed class ConfigManager
+{
+    private static ConfigManager _instance = null;
+    private static readonly object _lock = new object();
+    private Dictionary<string, string> _config;
+
+    private ConfigManager()
+    {
+        _config = new Dictionary<string, string>
+        {
+            {"DatabaseUrl", "localhost:5432"},
+            {"ApiKey", "abc123"}
+        };
+    }
+
+    public static ConfigManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                        _instance = new ConfigManager();
+                }
+            }
+            return _instance;
+        }
+    }
+
+    public string GetConfig(string key) => _config.GetValueOrDefault(key);
+}
+```
+
+**Uso:**
+```csharp
+var config = ConfigManager.Instance;
+string dbUrl = config.GetConfig("DatabaseUrl");
+```
+
+---
+
+### 🎯 Ejemplo: Factory Method Pattern
+
+**Problema:** Crear diferentes tipos de notificaciones sin acoplar código.
+
+```csharp
+// Producto abstracto
+public abstract class Notification
+{
+    public abstract void Send(string message);
+}
+
+// Productos concretos
+public class EmailNotification : Notification
+{
+    public override void Send(string message)
+        => Console.WriteLine($"📧 Email: {message}");
+}
+
+public class SMSNotification : Notification
+{
+    public override void Send(string message)
+        => Console.WriteLine($"📱 SMS: {message}");
+}
+
+// Factory
+public abstract class NotificationFactory
+{
+    public abstract Notification CreateNotification();
+}
+
+public class EmailFactory : NotificationFactory
+{
+    public override Notification CreateNotification()
+        => new EmailNotification();
+}
+
+// Uso
+var factory = new EmailFactory();
+var notification = factory.CreateNotification();
+notification.Send("¡Hola mundo!");
+```
+
+---
+
+## 🔗 Patrones Estructurales
+
+### Objetivo: **Componer objetos** para formar estructuras más grandes
+
+**Problema:** Necesito que objetos incompatibles trabajen juntos.
+
+**Solución:** Proporcionar formas de componer objetos manteniendo flexibilidad.
+
+---
+
+## 🔗 Patrones Estructurales - Lista
+
+| Patrón | Propósito |
+|--------|-----------|
+| **Adapter** | Hacer compatibles interfaces incompatibles |
+| **Bridge** | Separar abstracción de implementación |
+| **Composite** | Componer objetos en estructuras tipo árbol |
+| **Decorator** | Agregar funcionalidad dinámicamente |
+| **Facade** | Interfaz simple para subsistema complejo |
+| **Flyweight** | Compartir eficientemente objetos similares |
+| **Proxy** | Placeholder o representante de otro objeto |
+
+---
+
+### 🎯 Ejemplo: Adapter Pattern
+
+**Problema:** Sistema legacy con interfaz incompatible.
+
+```csharp
+// Servicio legacy (no podemos modificar)
+public class LegacyPaymentSystem
+{
+    public void ProcessLegacyPayment(string cardNumber, double amount)
+    {
+        Console.WriteLine($"Legacy: Processing ${amount} from card {cardNumber}");
+    }
+}
+
+// Nueva interfaz que queremos usar
+public interface IPaymentProcessor
+{
+    void ProcessPayment(PaymentRequest request);
+}
+
+// Adapter que hace compatible el sistema legacy
+public class PaymentAdapter : IPaymentProcessor
+{
+    private LegacyPaymentSystem _legacySystem;
+
+    public PaymentAdapter(LegacyPaymentSystem legacySystem)
+    {
+        _legacySystem = legacySystem;
+    }
+
+    public void ProcessPayment(PaymentRequest request)
+    {
+        // Adaptamos la nueva interfaz a la legacy
+        _legacySystem.ProcessLegacyPayment(
+            request.CardNumber,
+            request.Amount
+        );
+    }
+}
+
+// Uso
+var legacySystem = new LegacyPaymentSystem();
+IPaymentProcessor processor = new PaymentAdapter(legacySystem);
+processor.ProcessPayment(new PaymentRequest
+{
+    CardNumber = "1234-5678",
+    Amount = 100.50
+});
+```
+
+---
+
+### 🎯 Ejemplo: Decorator Pattern
+
+**Problema:** Agregar funcionalidades a objetos dinámicamente.
+
+```csharp
+// Componente base
+public interface ICoffee
+{
+    string GetDescription();
+    double GetCost();
+}
+
+// Implementación concreta
+public class SimpleCoffee : ICoffee
+{
+    public string GetDescription() => "Café simple";
+    public double GetCost() => 2.00;
+}
+
+// Decorator base
+public abstract class CoffeeDecorator : ICoffee
+{
+    protected ICoffee _coffee;
+
+    public CoffeeDecorator(ICoffee coffee)
+    {
+        _coffee = coffee;
+    }
+
+    public virtual string GetDescription() => _coffee.GetDescription();
+    public virtual double GetCost() => _coffee.GetCost();
+}
+
+// Decorators concretos
+public class MilkDecorator : CoffeeDecorator
+{
+    public MilkDecorator(ICoffee coffee) : base(coffee) { }
+
+    public override string GetDescription()
+        => _coffee.GetDescription() + ", Leche";
+    public override double GetCost()
+        => _coffee.GetCost() + 0.50;
+}
+
+public class SugarDecorator : CoffeeDecorator
+{
+    public SugarDecorator(ICoffee coffee) : base(coffee) { }
+
+    public override string GetDescription()
+        => _coffee.GetDescription() + ", Azúcar";
+    public override double GetCost()
+        => _coffee.GetCost() + 0.25;
+}
+
+// Uso: construir café dinámicamente
+ICoffee coffee = new SimpleCoffee();
+coffee = new MilkDecorator(coffee);
+coffee = new SugarDecorator(coffee);
+
+Console.WriteLine($"{coffee.GetDescription()}: ${coffee.GetCost()}");
+// Output: "Café simple, Leche, Azúcar: $2.75"
+```
+
+---
+
+## 🎭 Patrones Comportamentales
+
+### Objetivo: **Comunicación y responsabilidades** entre objetos
+
+**Problema:** Objetos necesitan interactuar de forma flexible y mantenible.
+
+**Solución:** Definir cómo los objetos colaboran y se comunican.
+
+---
+
+## 🎭 Patrones Comportamentales - Lista
+
+| Patrón | Propósito |
+|--------|-----------|
+| **Observer** | Notificar cambios a múltiples objetos |
+| **Strategy** | Intercambiar algoritmos dinámicamente |
+| **Command** | Encapsular solicitudes como objetos |
+| **State** | Cambiar comportamiento según estado interno |
+| **Template Method** | Definir algoritmo base, customizar pasos |
+| **Chain of Responsibility** | Pasar solicitudes por cadena de handlers |
+| **Visitor** | Separar algoritmos de estructuras |
+| **Mediator** | Mediar comunicación entre objetos |
+
+---
+
+### 🎯 Ejemplo: Observer Pattern
+
+**Problema:** Múltiples objetos necesitan reaccionar a cambios de estado.
+
+```csharp
+// Subject (Observable)
+public interface ISubject
+{
+    void Attach(IObserver observer);
+    void Detach(IObserver observer);
+    void Notify();
+}
+
+// Observer
+public interface IObserver
+{
+    void Update(ISubject subject);
+}
+
+// Subject concreto
+public class WeatherStation : ISubject
+{
+    private List<IObserver> _observers = new List<IObserver>();
+    private float _temperature;
+
+    public float Temperature
+    {
+        get { return _temperature; }
+        set
+        {
+            _temperature = value;
+            Notify(); // Notificar cuando cambia
+        }
+    }
+
+    public void Attach(IObserver observer)
+        => _observers.Add(observer);
+
+    public void Detach(IObserver observer)
+        => _observers.Remove(observer);
+
+    public void Notify()
+    {
+        foreach (var observer in _observers)
+            observer.Update(this);
+    }
+}
+
+// Observers concretos
+public class PhoneDisplay : IObserver
+{
+    public void Update(ISubject subject)
+    {
+        if (subject is WeatherStation station)
+            Console.WriteLine($"📱 Teléfono: Temperatura {station.Temperature}°C");
+    }
+}
+
+public class WebDisplay : IObserver
+{
+    public void Update(ISubject subject)
+    {
+        if (subject is WeatherStation station)
+            Console.WriteLine($"🌐 Web: Temperatura {station.Temperature}°C");
+    }
+}
+
+// Uso
+var weatherStation = new WeatherStation();
+var phoneDisplay = new PhoneDisplay();
+var webDisplay = new WebDisplay();
+
+weatherStation.Attach(phoneDisplay);
+weatherStation.Attach(webDisplay);
+
+weatherStation.Temperature = 25.5f;
+// Output:
+// 📱 Teléfono: Temperatura 25.5°C
+// 🌐 Web: Temperatura 25.5°C
+```
+
+---
+
+### 🎯 Ejemplo: Strategy Pattern
+
+**Problema:** Diferentes algoritmos para la misma tarea.
+
+```csharp
+// Estrategia
+public interface IPaymentStrategy
+{
+    void Pay(double amount);
+}
+
+// Estrategias concretas
+public class CreditCardStrategy : IPaymentStrategy
+{
+    private string _cardNumber;
+
+    public CreditCardStrategy(string cardNumber)
+    {
+        _cardNumber = cardNumber;
+    }
+
+    public void Pay(double amount)
+    {
+        Console.WriteLine($"💳 Pagando ${amount} con tarjeta {_cardNumber}");
+    }
+}
+
+public class PayPalStrategy : IPaymentStrategy
+{
+    private string _email;
+
+    public PayPalStrategy(string email)
+    {
+        _email = email;
+    }
+
+    public void Pay(double amount)
+    {
+        Console.WriteLine($"🏦 Pagando ${amount} con PayPal ({_email})");
+    }
+}
+
+// Contexto
+public class ShoppingCart
+{
+    private IPaymentStrategy _paymentStrategy;
+
+    public void SetPaymentStrategy(IPaymentStrategy strategy)
+    {
+        _paymentStrategy = strategy;
+    }
+
+    public void Checkout(double amount)
+    {
+        _paymentStrategy?.Pay(amount);
+    }
+}
+
+// Uso
+var cart = new ShoppingCart();
+
+// Pagar con tarjeta
+cart.SetPaymentStrategy(new CreditCardStrategy("1234-5678"));
+cart.Checkout(99.99);
+
+// Cambiar a PayPal
+cart.SetPaymentStrategy(new PayPalStrategy("user@email.com"));
+cart.Checkout(99.99);
+```
+
+---
+
+## 🎯 Resumen: ¿Cuándo usar cada categoría?
+
+| Situación | Categoría | Ejemplo |
+|-----------|-----------|---------|
+| **Controlar creación de objetos** | 🏗️ Creacional | Una sola instancia de DB → Singleton |
+| **Interfaces incompatibles** | 🔗 Estructural | API legacy → Adapter |
+| **Algoritmos intercambiables** | 🎭 Comportamental | Métodos de pago → Strategy |
+| **Notificar cambios** | 🎭 Comportamental | UI updates → Observer |
+| **Agregar funcionalidad** | 🔗 Estructural | Personalizar café → Decorator |
+
+---
+
+## 🌉 Transición: De GoF a PoSA
+
+### 🏗️ **Patrones GoF** (Nivel de código)
+- **Alcance:** Clases y objetos individuales
+- **Problema:** Cómo crear, estructurar y hacer interactuar objetos
+- **Ejemplos:** Singleton, Factory, Observer, Strategy
+
+### 🏛️ **Patrones PoSA** (Nivel arquitectónico)
+- **Alcance:** Sistemas completos y aplicaciones distribuidas
+- **Problema:** Cómo estructurar aplicaciones escalables y confiables
+- **Ejemplos:** Microservicios, Load Balancing, Service Discovery
+
+**💡 Ambos se complementan:** GoF para implementar componentes, PoSA para conectarlos.
+
+---
+
+# 🏛️ Patrones PoSA
+## Patterns of Scalable, Reliable Services
+
+---
+
+## 💭 Introducción PoSA
 
 > *"En un mundo donde la escala y la confiabilidad son requisitos, no características opcionales, los patrones arquitectónicos se convierten en el lenguaje común que permite a los equipos construir sistemas verdaderamente resilientes."*
 
@@ -369,16 +899,17 @@ services:
 
 ---
 
-## 🛠️ Práctica: Implementando Patrones PoSA
+## 🛠️ Práctica: Implementando Patrones GoF + PoSA
 
 ### Objetivo
-Implementar **Functional Decomposition** y **Reverse Proxy Routing** para un sistema de e-commerce básico.
+Implementar **patrones GoF** (Factory, Strategy) y **patrones PoSA** (Functional Decomposition + Reverse Proxy Routing) en un sistema de e-commerce.
 
 ---
 
 ## 📋 Requisitos Previos
 
 - ✅ Docker y Docker Compose instalados
+- ✅ .NET SDK o Python instalado
 - ✅ Editor de texto (VS Code, Sublime, etc.)
 - ✅ Navegador web
 - ✅ Terminal/PowerShell
@@ -387,24 +918,327 @@ Implementar **Functional Decomposition** y **Reverse Proxy Routing** para un sis
 ```bash
 docker --version
 docker-compose --version
+dotnet --version
 ```
 
 ---
 
-## 🎯 Escenario: MiTienda Online
+## 🎯 Escenario: MiTienda Online Avanzada
 
-Vamos a crear un sistema de e-commerce con 3 microservicios:
+### Arquitectura del sistema:
 
-1. **🛒 Servicio de Productos** - Puerto 8001
-2. **👤 Servicio de Usuarios** - Puerto 8002
-3. **💳 Servicio de Pagos** - Puerto 8003
-4. **🚪 Gateway (Nginx)** - Puerto 80
+1. **🛒 Servicio de Productos** (GoF: Factory + Strategy)
+2. **👤 Servicio de Usuarios** (GoF: Singleton + Observer)
+3. **💳 Servicio de Pagos** (GoF: Strategy + Factory)
+4. **🚪 Gateway (Nginx)** (PoSA: Reverse Proxy Routing)
 
-**Patrón aplicado:** Functional Decomposition + Reverse Proxy Routing
+**Patrones aplicados:**
+- **GoF:** Factory Method, Strategy, Singleton, Observer
+- **PoSA:** Functional Decomposition, Reverse Proxy Routing
 
 ---
 
-## 📝 Paso 1: Estructura del Proyecto
+## 📝 Paso 1: Estructura del Proyecto Avanzada
+
+```
+mitienda-avanzada/
+├── docker-compose.yml
+├── nginx/
+│   └── nginx.conf
+├── productos/
+│   ├── Dockerfile
+│   ├── Program.cs
+│   ├── Models/
+│   ├── Factories/
+│   └── Strategies/
+├── usuarios/
+│   ├── Dockerfile
+│   ├── Program.cs
+│   ├── Services/
+│   └── Patterns/
+└── pagos/
+    ├── Dockerfile
+    ├── Program.cs
+    ├── Strategies/
+    └── Factories/
+```
+
+---
+
+## 🏗️ Paso 2: Servicio de Productos (Factory + Strategy)
+
+**Archivo:** `productos/Models/Product.cs`
+```csharp
+public abstract class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+    public abstract string GetCategory();
+}
+
+public class Electronics : Product
+{
+    public override string GetCategory() => "Electronics";
+}
+
+public class Clothing : Product
+{
+    public override string GetCategory() => "Clothing";
+}
+
+public class Books : Product
+{
+    public override string GetCategory() => "Books";
+}
+```
+
+**Archivo:** `productos/Factories/ProductFactory.cs`
+```csharp
+// Factory Method Pattern
+public abstract class ProductFactory
+{
+    public abstract Product CreateProduct(int id, string name, decimal price);
+}
+
+public class ElectronicsFactory : ProductFactory
+{
+    public override Product CreateProduct(int id, string name, decimal price)
+    {
+        return new Electronics { Id = id, Name = name, Price = price };
+    }
+}
+
+public class ClothingFactory : ProductFactory
+{
+    public override Product CreateProduct(int id, string name, decimal price)
+    {
+        return new Clothing { Id = id, Name = name, Price = price };
+    }
+}
+```
+
+---
+
+## 🎭 Paso 2: Strategy Pattern para Descuentos
+
+**Archivo:** `productos/Strategies/DiscountStrategy.cs`
+```csharp
+// Strategy Pattern
+public interface IDiscountStrategy
+{
+    decimal ApplyDiscount(decimal price);
+    string GetDiscountType();
+}
+
+public class NoDiscountStrategy : IDiscountStrategy
+{
+    public decimal ApplyDiscount(decimal price) => price;
+    public string GetDiscountType() => "Sin descuento";
+}
+
+public class PercentageDiscountStrategy : IDiscountStrategy
+{
+    private readonly decimal _percentage;
+
+    public PercentageDiscountStrategy(decimal percentage)
+    {
+        _percentage = percentage;
+    }
+
+    public decimal ApplyDiscount(decimal price)
+    {
+        return price * (1 - _percentage / 100);
+    }
+
+    public string GetDiscountType() => $"{_percentage}% descuento";
+}
+
+public class FixedAmountDiscountStrategy : IDiscountStrategy
+{
+    private readonly decimal _amount;
+
+    public FixedAmountDiscountStrategy(decimal amount)
+    {
+        _amount = amount;
+    }
+
+    public decimal ApplyDiscount(decimal price)
+    {
+        return Math.Max(0, price - _amount);
+    }
+
+    public string GetDiscountType() => $"${_amount} descuento";
+}
+```
+
+---
+
+## 🎯 Paso 3: API Controller con Patrones
+
+**Archivo:** `productos/Program.cs`
+```csharp
+using Microsoft.AspNetCore.Mvc;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+var app = builder.Build();
+
+// Factory para crear productos
+var factories = new Dictionary<string, ProductFactory>
+{
+    ["electronics"] = new ElectronicsFactory(),
+    ["clothing"] = new ClothingFactory()
+};
+
+// Endpoint con Factory Method
+app.MapGet("/productos/{category}", (string category) =>
+{
+    if (!factories.ContainsKey(category.ToLower()))
+        return Results.BadRequest("Categoría no válida");
+
+    var factory = factories[category.ToLower()];
+    var products = new List<Product>
+    {
+        factory.CreateProduct(1, $"Producto {category} 1", 100m),
+        factory.CreateProduct(2, $"Producto {category} 2", 200m)
+    };
+
+    return Results.Ok(new {
+        category,
+        products,
+        pattern = "Factory Method aplicado"
+    });
+});
+
+// Endpoint con Strategy Pattern
+app.MapPost("/productos/{id}/aplicar-descuento",
+    ([FromRoute] int id, [FromBody] DiscountRequest request) =>
+{
+    IDiscountStrategy strategy = request.Type switch
+    {
+        "percentage" => new PercentageDiscountStrategy(request.Value),
+        "fixed" => new FixedAmountDiscountStrategy(request.Value),
+        _ => new NoDiscountStrategy()
+    };
+
+    decimal originalPrice = 150m; // Simular precio del producto
+    decimal discountedPrice = strategy.ApplyDiscount(originalPrice);
+
+    return Results.Ok(new {
+        productId = id,
+        originalPrice,
+        discountedPrice,
+        savings = originalPrice - discountedPrice,
+        discountType = strategy.GetDiscountType(),
+        pattern = "Strategy Pattern aplicado"
+    });
+});
+
+public record DiscountRequest(string Type, decimal Value);
+
+app.Run();
+```
+
+---
+
+## � Paso 4: Verificación de Patrones
+
+### Probar Factory Method:
+```bash
+curl http://localhost:8001/productos/electronics
+curl http://localhost:8001/productos/clothing
+```
+
+### Probar Strategy Pattern:
+```bash
+# Descuento porcentual (10%)
+curl -X POST http://localhost:8001/productos/1/aplicar-descuento \
+  -H "Content-Type: application/json" \
+  -d '{"type": "percentage", "value": 10}'
+
+# Descuento fijo ($20)
+curl -X POST http://localhost:8001/productos/1/aplicar-descuento \
+  -H "Content-Type: application/json" \
+  -d '{"type": "fixed", "value": 20}'
+```
+
+---
+
+## 🎓 Preguntas de Reflexión Avanzadas
+
+### **Patrones GoF:**
+1. **¿Cómo beneficia Factory Method?**
+   - Desacopla creación de productos de lógica de negocio
+   - Permite agregar nuevas categorías sin modificar código existente
+
+2. **¿Por qué Strategy es útil para descuentos?**
+   - Permite cambiar algoritmos de descuento dinámicamente
+   - Facilita agregar nuevos tipos de descuento
+
+### **Patrones PoSA:**
+3. **¿Qué ventajas da Functional Decomposition?**
+   - Servicios independientes, escalables por separado
+   - Equipos pueden trabajar en paralelo
+
+4. **¿Por qué usar Reverse Proxy?**
+   - Punto de entrada unificado
+   - Balanceado de carga y enrutamiento flexible
+
+---
+
+## 🏆 Desafío Extra: Combinar Patrones
+
+### Implementar Observer en el servicio de usuarios:
+
+```csharp
+// Observer Pattern para notificaciones
+public interface IUserObserver
+{
+    void OnUserRegistered(User user);
+}
+
+public class EmailNotificationObserver : IUserObserver
+{
+    public void OnUserRegistered(User user)
+    {
+        Console.WriteLine($"📧 Enviando email de bienvenida a {user.Email}");
+    }
+}
+
+public class UserService
+{
+    private List<IUserObserver> _observers = new();
+
+    public void Subscribe(IUserObserver observer)
+    {
+        _observers.Add(observer);
+    }
+
+    public void RegisterUser(User user)
+    {
+        // Lógica de registro...
+
+        // Notificar observadores
+        foreach (var observer in _observers)
+            observer.OnUserRegistered(user);
+    }
+}
+```
+
+---
+
+## 📊 Entregables Avanzados
+
+1. **Screenshots** de todos los endpoints funcionando
+2. **Diagrama** mostrando qué patrones se usan dónde
+3. **Código fuente** completo con comentarios explicando patrones
+4. **Reflexión escrita** (500 palabras) sobre beneficios observados
+5. **(Bonus)** Implementación del desafío Observer
+
+**Tiempo estimado:** 90-120 minutos
+
+---## 📝 Paso 1: Estructura del Proyecto
 
 Crear la siguiente estructura de carpetas:
 
@@ -601,18 +1435,18 @@ docker-compose logs productos
 ## 🎓 Preguntas de Reflexión
 
 1. **¿Qué patrón PoSA implementamos?**
-   - Functional Decomposition (servicios por dominio)
-   - Reverse Proxy Routing (enrutamiento centralizado)
+   <!-- - Functional Decomposition (servicios por dominio)
+   - Reverse Proxy Routing (enrutamiento centralizado) -->
 
 2. **¿Qué beneficios observas?**
-   - Cada servicio es independiente
+   <!-- - Cada servicio es independiente
    - Se puede escalar por separado
-   - Un punto de entrada unificado
+   - Un punto de entrada unificado -->
 
 3. **¿Qué desafíos identificas?**
-   - Configuración de red
+   <!-- - Configuración de red
    - Debugging distribuido
-   - Gestión de dependencias
+   - Gestión de dependencias -->
 
 ---
 
