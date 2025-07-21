@@ -906,352 +906,10 @@ services:
 
 ---
 
-## 🛠️ Práctica: Implementando Patrones GoF + PoSA
+## 🛠️ Práctica: Implementando Patrones PoSA
 
 ### Objetivo
-Implementar **patrones GoF** (Factory, Strategy) y **patrones PoSA** (Functional Decomposition + Reverse Proxy Routing) en un sistema de e-commerce.
-
----
-
-## 📋 Requisitos Previos
-
-- ✅ Docker y Docker Compose instalados
-- ✅ .NET SDK o Python instalado
-- ✅ Editor de texto (VS Code, Sublime, etc.)
-- ✅ Navegador web
-- ✅ Terminal/PowerShell
-
-**Verificar instalación:**
-```bash
-docker --version
-docker-compose --version
-dotnet --version
-```
-
----
-
-## 🎯 Escenario: MiTienda Online Avanzada
-
-### Arquitectura del sistema:
-
-1. **🛒 Servicio de Productos** (GoF: Factory + Strategy)
-2. **👤 Servicio de Usuarios** (GoF: Singleton + Observer)
-3. **💳 Servicio de Pagos** (GoF: Strategy + Factory)
-4. **🚪 Gateway (Nginx)** (PoSA: Reverse Proxy Routing)
-
-**Patrones aplicados:**
-- **GoF:** Factory Method, Strategy, Singleton, Observer
-- **PoSA:** Functional Decomposition, Reverse Proxy Routing
-
----
-
-## 📝 Paso 1: Estructura del Proyecto Avanzada
-
-```
-mitienda-avanzada/
-├── docker-compose.yml
-├── nginx/
-│   └── nginx.conf
-├── productos/
-│   ├── Dockerfile
-│   ├── Program.cs
-│   ├── Models/
-│   ├── Factories/
-│   └── Strategies/
-├── usuarios/
-│   ├── Dockerfile
-│   ├── Program.cs
-│   ├── Services/
-│   └── Patterns/
-└── pagos/
-    ├── Dockerfile
-    ├── Program.cs
-    ├── Strategies/
-    └── Factories/
-```
-
----
-
-## 🏗️ Paso 2: Servicio de Productos (Factory + Strategy)
-
-**Archivo:** `productos/Models/Product.cs`
-```csharp
-public abstract class Product
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public decimal Price { get; set; }
-    public abstract string GetCategory();
-}
-
-public class Electronics : Product
-{
-    public override string GetCategory() => "Electronics";
-}
-
-public class Clothing : Product
-{
-    public override string GetCategory() => "Clothing";
-}
-
-public class Books : Product
-{
-    public override string GetCategory() => "Books";
-}
-```
-
----
-
-## 🏗️ Paso 2: Servicio de Productos (Factory + Strategy)
-
-**Archivo:** `productos/Factories/ProductFactory.cs`
-```csharp
-// Factory Method Pattern
-public abstract class ProductFactory
-{
-    public abstract Product CreateProduct(int id, string name, decimal price);
-}
-
-public class ElectronicsFactory : ProductFactory
-{
-    public override Product CreateProduct(int id, string name, decimal price)
-    {
-        return new Electronics { Id = id, Name = name, Price = price };
-    }
-}
-
-public class ClothingFactory : ProductFactory
-{
-    public override Product CreateProduct(int id, string name, decimal price)
-    {
-        return new Clothing { Id = id, Name = name, Price = price };
-    }
-}
-```
-
----
-
-## 🎭 Paso 2: Strategy Pattern para Descuentos
-
-**Archivo:** `productos/Strategies/DiscountStrategy.cs`
-```csharp
-// Strategy Pattern
-public interface IDiscountStrategy
-{
-    decimal ApplyDiscount(decimal price);
-    string GetDiscountType();
-}
-
-public class NoDiscountStrategy : IDiscountStrategy
-{
-    public decimal ApplyDiscount(decimal price) => price;
-    public string GetDiscountType() => "Sin descuento";
-}
-
-public class PercentageDiscountStrategy : IDiscountStrategy
-{
-    private readonly decimal _percentage;
-
-    public PercentageDiscountStrategy(decimal percentage)
-    {
-        _percentage = percentage;
-    }
-
-    public decimal ApplyDiscount(decimal price)
-    {
-        return price * (1 - _percentage / 100);
-    }
-
-    public string GetDiscountType() => $"{_percentage}% descuento";
-}
-
-public class FixedAmountDiscountStrategy : IDiscountStrategy
-{
-    private readonly decimal _amount;
-
-    public FixedAmountDiscountStrategy(decimal amount)
-    {
-        _amount = amount;
-    }
-
-    public decimal ApplyDiscount(decimal price)
-    {
-        return Math.Max(0, price - _amount);
-    }
-
-    public string GetDiscountType() => $"${_amount} descuento";
-}
-```
-
----
-
-## 🎯 Paso 3: API Controller con Patrones
-
-**Archivo:** `productos/Program.cs`
-```csharp
-using Microsoft.AspNetCore.Mvc;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
-var app = builder.Build();
-
-// Factory para crear productos
-var factories = new Dictionary<string, ProductFactory>
-{
-    ["electronics"] = new ElectronicsFactory(),
-    ["clothing"] = new ClothingFactory()
-};
-
-// Endpoint con Factory Method
-app.MapGet("/productos/{category}", (string category) =>
-{
-    if (!factories.ContainsKey(category.ToLower()))
-        return Results.BadRequest("Categoría no válida");
-
-    var factory = factories[category.ToLower()];
-    var products = new List<Product>
-    {
-        factory.CreateProduct(1, $"Producto {category} 1", 100m),
-        factory.CreateProduct(2, $"Producto {category} 2", 200m)
-    };
-
-    return Results.Ok(new {
-        category,
-        products,
-        pattern = "Factory Method aplicado"
-    });
-});
-
-// Endpoint con Strategy Pattern
-app.MapPost("/productos/{id}/aplicar-descuento",
-    ([FromRoute] int id, [FromBody] DiscountRequest request) =>
-{
-    IDiscountStrategy strategy = request.Type switch
-    {
-        "percentage" => new PercentageDiscountStrategy(request.Value),
-        "fixed" => new FixedAmountDiscountStrategy(request.Value),
-        _ => new NoDiscountStrategy()
-    };
-
-    decimal originalPrice = 150m; // Simular precio del producto
-    decimal discountedPrice = strategy.ApplyDiscount(originalPrice);
-
-    return Results.Ok(new {
-        productId = id,
-        originalPrice,
-        discountedPrice,
-        savings = originalPrice - discountedPrice,
-        discountType = strategy.GetDiscountType(),
-        pattern = "Strategy Pattern aplicado"
-    });
-});
-
-public record DiscountRequest(string Type, decimal Value);
-
-app.Run();
-```
-
----
-
-## 🐳 Paso 4: Verificación de Patrones
-
-### Probar Factory Method:
-```bash
-curl http://localhost:8001/productos/electronics
-curl http://localhost:8001/productos/clothing
-```
-
-### Probar Strategy Pattern:
-```bash
-# Descuento porcentual (10%)
-curl -X POST http://localhost:8001/productos/1/aplicar-descuento \
-  -H "Content-Type: application/json" \
-  -d '{"type": "percentage", "value": 10}'
-
-# Descuento fijo ($20)
-curl -X POST http://localhost:8001/productos/1/aplicar-descuento \
-  -H "Content-Type: application/json" \
-  -d '{"type": "fixed", "value": 20}'
-```
-
----
-
-## 🎓 Preguntas de Reflexión Avanzadas
-
-### **Patrones GoF:**
-1. **¿Cómo beneficia Factory Method?**
-   - Desacopla creación de productos de lógica de negocio
-   - Permite agregar nuevas categorías sin modificar código existente
-
-2. **¿Por qué Strategy es útil para descuentos?**
-   - Permite cambiar algoritmos de descuento dinámicamente
-   - Facilita agregar nuevos tipos de descuento
-
----
-
-## 🎓 Preguntas de Reflexión Avanzadas
-
-### **Patrones PoSA:**
-3. **¿Qué ventajas da Functional Decomposition?**
-   - Servicios independientes, escalables por separado
-   - Equipos pueden trabajar en paralelo
-
-4. **¿Por qué usar Reverse Proxy?**
-   - Punto de entrada unificado
-   - Balanceado de carga y enrutamiento flexible
-
----
-
-## 🏆 Desafío Extra: Combinar Patrones
-
-### Implementar Observer en el servicio de usuarios:
-
-```csharp
-// Observer Pattern para notificaciones
-public interface IUserObserver
-{
-    void OnUserRegistered(User user);
-}
-
-public class EmailNotificationObserver : IUserObserver
-{
-    public void OnUserRegistered(User user)
-    {
-        Console.WriteLine($"📧 Enviando email de bienvenida a {user.Email}");
-    }
-}
-
-public class UserService
-{
-    private List<IUserObserver> _observers = new();
-
-    public void Subscribe(IUserObserver observer)
-    {
-        _observers.Add(observer);
-    }
-
-    public void RegisterUser(User user)
-    {
-        // Lógica de registro...
-
-        // Notificar observadores
-        foreach (var observer in _observers)
-            observer.OnUserRegistered(user);
-    }
-}
-```
-
----
-
-## 📊 Entregables Avanzados
-
-1. **Screenshots** de todos los endpoints funcionando
-2. **Diagrama** mostrando qué patrones se usan dónde
-3. **Código fuente** completo con comentarios explicando patrones
-4. **Reflexión escrita** (500 palabras) sobre beneficios observados
-5. **(Bonus)** Implementación del desafío Observer
-
-**Tiempo estimado:** 90-120 minutos
+Implementar **patrones PoSA** (Functional Decomposition + Reverse Proxy Routing) en un sistema de e-commerce.
 
 ---
 
@@ -1334,30 +992,23 @@ http {
     upstream productos {
         server productos:80;
     }
-
     upstream usuarios {
         server usuarios:80;
     }
-
     upstream pagos {
         server pagos:80;
     }
-
     server {
         listen 80;
-
         location /api/productos {
             proxy_pass http://productos/productos;
         }
-
         location /api/usuarios {
             proxy_pass http://usuarios/usuarios;
         }
-
         location /api/pagos {
             proxy_pass http://pagos/pagos;
         }
-
         location /health {
             return 200 "Gateway OK";
         }
@@ -1378,19 +1029,16 @@ services:
     container_name: productos-service
     networks:
       - tienda-network
-
   usuarios:
     build: ./usuarios
     container_name: usuarios-service
     networks:
       - tienda-network
-
   pagos:
     build: ./pagos
     container_name: pagos-service
     networks:
       - tienda-network
-
   gateway:
     image: nginx
     container_name: api-gateway
@@ -1404,7 +1052,6 @@ services:
       - pagos
     networks:
       - tienda-network
-
 networks:
   tienda-network:
     driver: bridge
@@ -1454,17 +1101,14 @@ docker-compose logs productos
 1. **¿Qué patrón PoSA implementamos?**
    <!-- - Functional Decomposition (servicios por dominio)
    - Reverse Proxy Routing (enrutamiento centralizado) -->
-
 2. **¿Qué beneficios observas?**
    <!-- - Cada servicio es independiente
    - Se puede escalar por separado
    - Un punto de entrada unificado -->
-
 3. **¿Qué desafíos identificas?**
    <!-- - Configuración de red
    - Debugging distribuido
    - Gestión de dependencias -->
-
 ---
 
 ## 🏆 Desafío Extra (Opcional)
@@ -1504,7 +1148,9 @@ networks:
 
 ---
 
-## 💡 Extensiones Futuras
+## 💡 Pensamiento para implementaciones futuras
+
+> No es parte del ejercicio, pero pueden pensar en trabajo futuro
 
 - Agregar base de datos (PostgreSQL/MongoDB)
 - Implementar Service Discovery
